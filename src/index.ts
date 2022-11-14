@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import createError from "http-errors";
 import logger from "morgan";
 
-import indexRoute from "routes/index";
+import indexRoute from "./routes/index";
+import "./configs/db.config";
 
 dotenv.config();
 

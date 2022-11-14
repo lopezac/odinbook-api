@@ -1,20 +1,19 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import type { UserType } from "../types/user.types";
+import { createUser } from "../services/user.service";
+import { hashPassword } from "../services/auth.service";
 
-type User = {
-  firstName: string;
-  lastName: string;
-  birthday: Date;
-  email: string;
-  password: string;
-  gender: boolean;
-};
-
-const sign_up_post = async (req: Request, res: Response) => {
-  // const hashedPassword = hashPassword();
-  const data: User = req.body;
-  const user = await createUser(req.body);
-};
-
-export default {
-  sign_up_post,
+export const signUpPost = async (req: Request, res: Response) => {
+  try {
+    const hashedPassword = hashPassword();
+    const userData: UserType = req.body;
+    console.log("run", userData);
+    const user = await createUser(userData);
+    console.log("after", user);
+    return res.json(user);
+  } catch (error) {
+    return res
+      .status(503)
+      .json({ message: "Error at signUpPost controller auth", error });
+  }
 };
