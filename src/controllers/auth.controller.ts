@@ -1,15 +1,22 @@
 import type { Request, Response } from "express";
-import type { UserType } from "../types/user.types";
+import type { UserLogin, UserType } from "../types/user.types";
 import { createUser } from "../services/user.service";
-import { hashPassword } from "../services/auth.service";
+import { createToken, hashPassword } from "../services/auth.service";
 
-export const signUpPost = async (req: Request, res: Response) => {
+const signUpPost = async (req: Request, res: Response) => {
   try {
-    const hashedPassword = hashPassword();
-    const userData: UserType = req.body;
-    console.log("run", userData);
-    const user = await createUser(userData);
-    console.log("after", user);
+    const { firstName, lastName, email, birthday, gender, password } =
+      req.body as UserType;
+    const hashedPassword = await hashPassword(password);
+    if (hashedPassword instanceof Error) return;
+    const user = await createUser({
+      firstName,
+      lastName,
+      email,
+      birthday,
+      gender,
+      password: hashedPassword,
+    });
     return res.json(user);
   } catch (error) {
     return res
@@ -17,3 +24,27 @@ export const signUpPost = async (req: Request, res: Response) => {
       .json({ message: "Error at signUpPost controller auth", error });
   }
 };
+
+const signInPost = async (req: Request, res: Response) => {
+  try {
+    const user = req.body;
+    const token = await createToken(user);
+    return res.json({ token });
+  } catch (error) {
+    return res
+      .status(503)
+      .json({ message: "Error at signInPost controller auth", error });
+  }
+};
+
+const signOutPost = async (req: Request, res: Response) => {
+  try {
+    return res.json(req.body);
+  } catch (error) {
+    return res
+      .status(503)
+      .json({ message: "Error at signOutPost controller auth", error });
+  }
+};
+
+export default { signInPost, signUpPost, signOutPost };
