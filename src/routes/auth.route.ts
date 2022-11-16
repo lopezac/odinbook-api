@@ -1,15 +1,28 @@
 import express from "express";
 
-import AuthC from "../controllers/auth.controller";
-import AuthV from "../middleware/auth.validation";
-import { LocalAuth, JwtAuth } from "../middleware/auth.middleware";
+import AuthCont from "../controllers/auth.controller";
+import AuthVal from "../middleware/auth.validation";
+import AuthMid from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.post("/sign-up", AuthV.signUpValidation, AuthC.signUpPost);
+router.post("/sign-up", AuthVal.signUpValidation, AuthCont.signUpPost);
 
-router.post("/sign-in", AuthV.signInValidation, LocalAuth(), AuthC.signInPost);
+router.post(
+  "/sign-in",
+  AuthVal.signInValidation,
+  AuthMid.LocalAuth(),
+  AuthCont.signInPost
+);
 
-router.post("/sign-out", JwtAuth(), AuthC.signOutPost);
+router.post("/sign-out", AuthMid.JwtAuth(), AuthCont.signOutPost);
+
+router.get("/auth/facebook", AuthMid.FBAuth());
+
+router.get(
+  "/auth/facebook/callback",
+  AuthMid.FBCallbackAuth(),
+  AuthMid.RedirectHome
+);
 
 export default router;

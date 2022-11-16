@@ -2,11 +2,10 @@ import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import createError from "http-errors";
 import logger from "morgan";
+dotenv.config();
 
 import indexRoute from "./routes/index";
 import "./configs/db.config";
-
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT;

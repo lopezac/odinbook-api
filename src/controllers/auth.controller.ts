@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { UserLogin, UserType } from "../types/user.types";
+import type { UserType } from "../types/user.types";
 import { createUser } from "../services/user.service";
 import { createToken, hashPassword } from "../services/auth.service";
 
@@ -39,7 +39,9 @@ const signInPost = async (req: Request, res: Response) => {
 
 const signOutPost = async (req: Request, res: Response) => {
   try {
-    return res.json(req.body);
+    delete req.user;
+    delete req.headers.authorization;
+    return res.json("Succesfully signed out");
   } catch (error) {
     return res
       .status(503)
