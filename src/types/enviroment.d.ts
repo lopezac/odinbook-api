@@ -15,7 +15,11 @@ declare module "passport-facebook" {
   interface Profile {
     first_name: string;
     last_name: string;
-    picture: object;
+    picture: {
+      data: {
+        url: string;
+      };
+    };
     email: string;
   }
 }

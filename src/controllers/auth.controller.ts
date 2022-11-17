@@ -7,6 +7,7 @@ const signUpPost = async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, email, birthday, gender, password } =
       req.body as UserType;
+    if (!password) return;
     const hashedPassword = await hashPassword(password);
     if (hashedPassword instanceof Error) return;
     const user = await createUser({

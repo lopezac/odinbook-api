@@ -22,7 +22,7 @@ router.get("/auth/facebook", AuthMid.FBAuth());
 router.get(
   "/auth/facebook/callback",
   AuthMid.FBCallbackAuth(),
-  AuthMid.RedirectHome
+  AuthCont.signInPost
 );
 
 export default router;

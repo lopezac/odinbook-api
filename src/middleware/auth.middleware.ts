@@ -1,10 +1,11 @@
+import { Request, Response } from "express";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as FacebookStrategy, Profile } from "passport-facebook";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model";
-import { NextFunction, Request, Response } from "express";
+import { FBUser } from "types/user.types";
 
 // Local auth, email and password
 const UserConfig = { usernameField: "email" };
@@ -12,7 +13,9 @@ passport.use(
   new LocalStrategy(UserConfig, (username, password, done) => {
     User.findOne({ email: username }).exec((err, user) => {
       if (err) return done(err);
-      if (!user) return done(null, false, { message: "User was not found" });
+      if (!user || !user.password) {
+        return done(null, false, { message: "User was not found" });
+      }
       bcrypt.compare(password, user.password, (err, result) => {
         if (err) return done(err);
         if (!result) {
@@ -48,33 +51,30 @@ const FBOptions = {
   callbackURL: "http://localhost:8000/auth/facebook/callback",
   profileFields: ["id", "name", "picture", "email", "gender", "birthday"],
 };
-// interface Profile extends passport.Profile {}
+
 passport.use(
   new FacebookStrategy(
     FBOptions,
     (accessToken, refreshToken, profile: Profile, cb) => {
       const userData = profile._json;
-      User.findOne({ facebookId: userData.id }).exec((err, user) => {
+      User.findOne({ facebookID: userData.id }).exec((err, user) => {
         if (err) return cb(err);
         if (user) return cb(null, user);
+        else {
+          const { first_name, last_name, id, picture, email }: FBUser =
+            userData;
+          const user = new User({
+            firstName: first_name,
+            lastName: last_name,
+            facebookID: id,
+            picture: picture.data.url,
+            email,
+          });
+          user.save().then((user) => {
+            cb(null, user);
+          });
+        }
       });
-      console.log("profile", profile);
-      // const { first_name, last_name, id, picture, birthday, gender, email } =
-      //   profile;
-      // console.log("data", profile._json, profile);
-      // const user = new User({
-      //   firstName: first_name,
-      //   lastName: last_name,
-      //   facebookId: id,
-      //   picture,
-      //   birthday,
-      //   gender,
-      //   email,
-      // });
-      // user.save().then((user) => {
-      //   cb(null, user);
-      // });
-      cb(null, profile._json);
     }
   )
 );
@@ -88,7 +88,10 @@ const JwtAuth = () => {
 };
 
 const FBAuth = () => {
-  return passport.authenticate("facebook", { session: false });
+  return passport.authenticate("facebook", {
+    session: false,
+    scope: ["email"],
+  });
 };
 
 const FBCallbackAuth = () => {
@@ -98,8 +101,4 @@ const FBCallbackAuth = () => {
   });
 };
 
-const RedirectHome = (req: Request, res: Response) => {
-  return res.redirect("/posts");
-};
-
-export default { LocalAuth, JwtAuth, FBAuth, FBCallbackAuth, RedirectHome };
+export default { LocalAuth, JwtAuth, FBAuth, FBCallbackAuth };
