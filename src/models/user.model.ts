@@ -13,6 +13,10 @@ const UserSchema = new Schema({
   gender: { type: String, required: false, default: "male" },
   picture: { type: String, required: false, default: defaultImage },
   facebookID: { type: String, required: false },
+  friends: { type: Array, required: false },
+  posts: { type: Array, required: false },
+  comments: { type: Array, required: false },
+  messages: { type: Array, required: false },
 });
 
 const User = mongoose.model("User", UserSchema);
