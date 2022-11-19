@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { UserType } from "../types/user.types";
-import { createUser } from "../services/user.service";
+import UserService from "../services/user.service";
 import { createToken, hashPassword } from "../services/auth.service";
 
 const signUpPost = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ const signUpPost = async (req: Request, res: Response) => {
     if (!password) return;
     const hashedPassword = await hashPassword(password);
     if (hashedPassword instanceof Error) return;
-    const user = await createUser({
+    const user = await UserService.createUser({
       firstName,
       lastName,
       email,
@@ -19,10 +19,10 @@ const signUpPost = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
     return res.json(user);
-  } catch (error) {
+  } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at signUpPost controller auth", error });
+      .json({ message: "Error at signUpPost controller auth", err });
   }
 };
 
@@ -31,10 +31,10 @@ const signInPost = async (req: Request, res: Response) => {
     const user = req.body;
     const token = await createToken(user);
     return res.json({ token });
-  } catch (error) {
+  } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at signInPost controller auth", error });
+      .json({ message: "Error at signInPost controller auth", err });
   }
 };
 
@@ -43,10 +43,10 @@ const signOutPost = async (req: Request, res: Response) => {
     delete req.user;
     delete req.headers.authorization;
     return res.json("Succesfully signed out");
-  } catch (error) {
+  } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at signOutPost controller auth", error });
+      .json({ message: "Error at signOutPost controller auth", err });
   }
 };
 

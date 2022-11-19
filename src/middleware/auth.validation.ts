@@ -2,7 +2,7 @@ import { body } from "express-validator";
 import validationErrors from "./errors.validation";
 import User from "../models/user.model";
 
-const signUpValidation = [
+const signUp = [
   body("firstName", "First name must be at least 2 characters long")
     .trim()
     .isLength({ min: 2, max: 120 })
@@ -40,7 +40,7 @@ const signUpValidation = [
   validationErrors,
 ];
 
-const signInValidation = [
+const signIn = [
   body("email", "Incorrect email").normalizeEmail().isEmail(),
   body("password", "Incorrect password")
     .trim()
@@ -49,4 +49,4 @@ const signInValidation = [
     .escape(),
 ];
 
-export default { signInValidation, signUpValidation };
+export default { signIn, signUp };

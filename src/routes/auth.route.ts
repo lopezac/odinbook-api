@@ -6,11 +6,11 @@ import AuthMid from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.post("/sign-up", AuthVal.signUpValidation, AuthCont.signUpPost);
+router.post("/sign-up", AuthVal.signUp, AuthCont.signUpPost);
 
 router.post(
   "/sign-in",
-  AuthVal.signInValidation,
+  AuthVal.signIn,
   AuthMid.LocalAuth(),
   AuthCont.signInPost
 );

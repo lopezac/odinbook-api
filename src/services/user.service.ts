@@ -1,6 +1,8 @@
 import { UserType } from "../types/user.types";
-import User from "../models/user.model";
 import { ReturnQuery } from "../types/request.types";
+import User from "../models/user.model";
+import Post from "../models/post.model";
+import Friendship from "../models/friendship.model";
 
 async function createUser(userData: UserType) {
   try {
@@ -24,4 +26,35 @@ async function getUsers({ filter, page, sort }: ReturnQuery) {
   }
 }
 
-export { createUser, getUsers };
+async function getUser(userId: string) {
+  try {
+    return await User.findById(userId).exec();
+  } catch (err) {
+    throw Error("Error getting user, user service");
+  }
+}
+
+async function getUserPosts(userId: string) {
+  try {
+    return await Post.find({ _id: userId }).exec();
+  } catch (err) {
+    throw Error("Error getting user posts, user service");
+  }
+}
+
+async function getUserFriends(userId: string) {
+  try {
+    const friendships = await Friendship.find({ users: { $in: [userId] } });
+    return friendships.flat().filter((user) => user.toString() !== userId);
+  } catch (err) {
+    throw Error("Error getting user friends, user service");
+  }
+}
+
+export default {
+  createUser,
+  getUsers,
+  getUser,
+  getUserPosts,
+  getUserFriends,
+};

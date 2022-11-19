@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 function validationErrors(req: Request, res: Response, next: NextFunction) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
     return res.status(400).json({
       message: "There are errors in validation",
-      errors,
+      errors: result.array(),
     });
   }
   next();
