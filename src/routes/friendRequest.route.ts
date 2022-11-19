@@ -7,4 +7,6 @@ router.post("/", FriendReqValidation.post, FriendReqController.post);
 
 router.delete("/:id", FriendReqController.id_delete);
 
+router.post("/:id", FriendReqController.id_post);
+
 export default router;

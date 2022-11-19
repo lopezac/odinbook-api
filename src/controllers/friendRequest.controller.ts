@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import FriendReqService from "../services/friendRequest.service";
+import FriendshipService from "../services/friendship.service";
 
 type friendReq = { emitter: string; receiver: string };
 
@@ -7,7 +8,7 @@ async function post(req: Request, res: Response) {
   try {
     const { emitter, receiver }: friendReq = req.body;
 
-    const friendReq = await FriendReqService.create(emitter, receiver);
+    const friendReq = await FriendReqService.createFriendReq(emitter, receiver);
 
     return res.json(friendReq);
   } catch (err) {
@@ -21,7 +22,7 @@ async function id_delete(req: Request, res: Response) {
   try {
     const { id } = req.params;
 
-    await FriendReqService.id_delete(id);
+    await FriendReqService.deleteFriendReq(id);
 
     return res.json({ friendRequestId: id });
   } catch (err) {
@@ -35,9 +36,12 @@ async function id_post(req: Request, res: Response) {
   try {
     const { id } = req.params;
 
-    await FriendReqService.id_delete(id);
+    const friendReq = await FriendReqService.getFriendReq(id);
+    if (!friendReq) return;
+    await FriendshipService.createFriendship(friendReq);
+    // await FriendReqService.deleteFriendReq(id);
 
-    return res.json(req.body);
+    return res.json(friendReq);
   } catch (err) {
     return res
       .status(500)
