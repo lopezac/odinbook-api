@@ -9,4 +9,12 @@ const createFriendship = async (user1: string, user2: string) => {
   }
 };
 
-export default { createFriendship };
+const deleteFriendship = async (id: string) => {
+  try {
+    return await Friendship.findByIdAndDelete(id);
+  } catch (err) {
+    throw Error("Error deleting friendship, at service");
+  }
+};
+
+export default { createFriendship, deleteFriendship };

@@ -14,4 +14,9 @@ function getPageParams(page = "1") {
   return (+page - 1) * 10;
 }
 
-export { getQueryParams };
+function getLastPathWord(path: string) {
+  const splittedPath = path.split("/");
+  return splittedPath[splittedPath.length - 1];
+}
+
+export { getQueryParams, getLastPathWord };

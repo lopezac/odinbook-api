@@ -1,4 +1,4 @@
-import { UserType } from "../types/user.types";
+import { UserType, UserUpdate } from "../types/user.types";
 import { ReturnQuery } from "../types/request.types";
 import User from "../models/user.model";
 import Post from "../models/post.model";
@@ -42,6 +42,17 @@ async function getUserPosts(userId: string) {
   }
 }
 
+async function getUserPostsWithMedia(userId: string, mediaType: string) {
+  try {
+    return await Post.find({
+      _id: userId,
+      [mediaType]: { $exists: true, $not: { $size: 0 } },
+    }).exec();
+  } catch (err) {
+    throw Error("Error getting user posts, user service");
+  }
+}
+
 async function getUserFriends(userId: string) {
   try {
     const friendships = await Friendship.find({ users: { $in: [userId] } });
@@ -51,10 +62,29 @@ async function getUserFriends(userId: string) {
   }
 }
 
+async function updateUser(userId: string, update: UserUpdate) {
+  try {
+    return await User.findByIdAndUpdate(userId, update).exec();
+  } catch (err) {
+    throw Error("Error updating user, user service");
+  }
+}
+
+async function deleteUser(userId: string) {
+  try {
+    return await User.findByIdAndDelete(userId).exec();
+  } catch (err) {
+    throw Error("Error deleting user, user service");
+  }
+}
+
 export default {
   createUser,
   getUsers,
   getUser,
   getUserPosts,
+  getUserPostsWithMedia,
   getUserFriends,
+  updateUser,
+  deleteUser,
 };

@@ -1,5 +1,5 @@
 {
-  "include": ["src"],
+  "include": ["src", "test"],
   "exclude": ["node_modules", "dist"],
   // "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
@@ -7,7 +7,7 @@
     "module": "commonjs",
     "baseUrl": "./src",
     "outDir": "./dist",
-    "rootDir": "./src",
+    // "rootDir": "./src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

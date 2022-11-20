@@ -1,17 +1,23 @@
 import express from "express";
 import UserController from "../controllers/user.controller";
-// import UserVal from "../middleware/user.validation";
+import AuthMiddleware from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.get("/", UserController.users_get);
+router.get("/", UserController.get);
 
-router.get("/:userId", UserController.users_id_get);
+router.get("/:userId", UserController.id_get);
 
-router.get("/:userId/photos", UserController.users_id_posts_get);
+router.get("/:userId/posts", UserController.id_posts_get);
 
-router.get("/:userId/videos", UserController.users_id_posts_get);
+router.get("/:userId/photos", UserController.id_posts_media_get);
 
-router.get("/:userId/friends", UserController.users_id_friends_get);
+router.get("/:userId/videos", UserController.id_posts_media_get);
+
+router.get("/:userId/friends", UserController.id_friends_get);
+
+router.delete("/:userId", AuthMiddleware.JwtAuth(), UserController.id_delete);
+
+router.put("/:userId", AuthMiddleware.JwtAuth(), UserController.id_put);
 
 export default router;

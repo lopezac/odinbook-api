@@ -10,6 +10,16 @@ export type UserType = {
   picture?: string;
 };
 
+export type UserUpdate = {
+  firstName?: string;
+  lastName?: string;
+  birthday?: Date;
+  email?: string;
+  password?: string;
+  gender?: string;
+  picture?: string;
+};
+
 export type FBUser = {
   first_name: string;
   last_name: string;

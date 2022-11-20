@@ -38,10 +38,15 @@ async function id_post(req: Request, res: Response) {
 
     const friendReq = await FriendReqService.getFriendReq(id);
     if (!friendReq) return;
-    await FriendshipService.createFriendship(friendReq);
-    // await FriendReqService.deleteFriendReq(id);
+    const { emitter, receiver } = friendReq;
 
-    return res.json(friendReq);
+    const friendship = await FriendshipService.createFriendship(
+      emitter,
+      receiver
+    );
+    await FriendReqService.deleteFriendReq(id);
+
+    return res.json(friendship);
   } catch (err) {
     return res
       .status(500)

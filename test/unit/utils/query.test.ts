@@ -1,4 +1,7 @@
-import { getQueryParams } from "./query.helper";
+import {
+  getLastPathWord,
+  getQueryParams,
+} from "../../../src/utils/query.helper";
 
 describe("getQueryParams works", () => {
   test("works with full queries, page, filter and sort", () => {
@@ -25,4 +28,10 @@ describe("getQueryParams works", () => {
       filter: { gender: "female", lastName: "perez" },
     });
   });
+});
+
+test("getLastPathWord works", () => {
+  const path = "/users/nth753TN753H7N5T3/photos";
+  const lastWord = getLastPathWord(path);
+  expect(lastWord).toBe("photos");
 });

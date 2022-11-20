@@ -1,59 +1,115 @@
 import { Request, Response } from "express";
-import { Query } from "types/request.types";
+import { Query } from "../types/request.types";
+import { UserUpdate } from "../types/user.types";
 import UserService from "../services/user.service";
-import { getQueryParams } from "../utils/query.helper";
+import { getLastPathWord, getQueryParams } from "../utils/query.helper";
 
-async function users_get(req: Request, res: Response) {
+async function get(req: Request, res: Response) {
   try {
     const query = getQueryParams(req.query as Query);
+
     const users = await UserService.getUsers(query);
+
     return res.json(users);
   } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at users_get, user controller", err });
+      .json({ message: "Error at get, user controller", err });
   }
 }
 
-async function users_id_get(req: Request, res: Response) {
+async function id_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
+
     const user = await UserService.getUser(userId);
+
     return res.json(user);
   } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at users_id_get, user controller", err });
+      .json({ message: "Error at id_get, user controller", err });
   }
 }
 
-async function users_id_posts_get(req: Request, res: Response) {
+async function id_posts_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
+
     const posts = await UserService.getUserPosts(userId);
+
     return res.json(posts);
   } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at users_id_posts_get, user controller", err });
+      .json({ message: "Error at id_posts_get, user controller", err });
   }
 }
 
-async function users_id_friends_get(req: Request, res: Response) {
+async function id_posts_media_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
+    const mediaType = getLastPathWord(req.originalUrl);
+
+    const posts = await UserService.getUserPostsWithMedia(userId, mediaType);
+
+    return res.json(posts);
+  } catch (err) {
+    return res
+      .status(503)
+      .json({ message: "Error at id_posts_get, user controller", err });
+  }
+}
+
+async function id_friends_get(req: Request, res: Response) {
+  try {
+    const { userId } = req.params;
+
     const friends = await UserService.getUserFriends(userId);
+
     return res.json(friends);
   } catch (err) {
     return res
       .status(503)
-      .json({ message: "Error at users_id_friends_get, user controller", err });
+      .json({ message: "Error at id_friends_get, user controller", err });
+  }
+}
+
+async function id_put(req: Request, res: Response) {
+  try {
+    const { userId } = req.params;
+    const update = req.body as UserUpdate;
+
+    await UserService.updateUser(userId, update);
+
+    return res.json(userId);
+  } catch (err) {
+    return res
+      .status(503)
+      .json({ message: "Error at id_put, user controller", err });
+  }
+}
+
+async function id_delete(req: Request, res: Response) {
+  try {
+    const { userId } = req.params;
+
+    await UserService.deleteUser(userId);
+
+    return res.json(userId);
+  } catch (err) {
+    return res
+      .status(503)
+      .json({ message: "Error at id_delete, user controller", err });
   }
 }
 
 export default {
-  users_get,
-  users_id_get,
-  users_id_posts_get,
-  users_id_friends_get,
+  get,
+  id_get,
+  id_posts_get,
+  id_friends_get,
+  id_posts_media_get,
+  id_delete,
+  id_put,
 };
