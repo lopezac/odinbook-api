@@ -1,12 +1,18 @@
 import express from "express";
 import FriendReqController from "../controllers/friendRequest.controller";
 import FriendReqValidation from "../middleware/friendRequest.validation";
+import AuthMiddleware from "../middleware/auth.middleware";
 const router = express.Router();
 
-router.post("/", FriendReqValidation.post, FriendReqController.post);
+router.post(
+  "/",
+  AuthMiddleware.JwtAuth(),
+  FriendReqValidation.post,
+  FriendReqController.post
+);
 
-router.delete("/:id", FriendReqController.id_delete);
+router.delete("/:id", AuthMiddleware.JwtAuth(), FriendReqController.id_delete);
 
-router.post("/:id", FriendReqController.id_post);
+router.post("/:id", AuthMiddleware.JwtAuth(), FriendReqController.id_post);
 
 export default router;

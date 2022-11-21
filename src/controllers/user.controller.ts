@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { Query } from "../types/request.types";
 import { UserUpdate } from "../types/user.types";
 import UserService from "../services/user.service";
+import PostService from "../services/post.service";
+import FriendshipService from "../services/friendship.service";
 import { getLastPathWord, getQueryParams } from "../utils/query.helper";
 
 async function get(req: Request, res: Response) {
@@ -36,7 +38,7 @@ async function id_posts_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
 
-    const posts = await UserService.getUserPosts(userId);
+    const posts = await PostService.getUserPosts(userId);
 
     return res.json(posts);
   } catch (err) {
@@ -51,7 +53,7 @@ async function id_posts_media_get(req: Request, res: Response) {
     const { userId } = req.params;
     const mediaType = getLastPathWord(req.originalUrl);
 
-    const posts = await UserService.getUserPostsWithMedia(userId, mediaType);
+    const posts = await PostService.getUserPostsWithMedia(userId, mediaType);
 
     return res.json(posts);
   } catch (err) {
@@ -65,7 +67,7 @@ async function id_friends_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
 
-    const friends = await UserService.getUserFriends(userId);
+    const friends = await FriendshipService.getUserFriends(userId);
 
     return res.json(friends);
   } catch (err) {
@@ -95,6 +97,7 @@ async function id_delete(req: Request, res: Response) {
     const { userId } = req.params;
 
     await UserService.deleteUser(userId);
+    await PostService.deleteUserPosts(userId);
 
     return res.json(userId);
   } catch (err) {

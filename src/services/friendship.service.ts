@@ -1,3 +1,4 @@
+import { createObjectId } from "../utils/mongoose.helper";
 import Friendship from "../models/friendship.model";
 
 const createFriendship = async (user1: string, user2: string) => {
@@ -17,4 +18,20 @@ const deleteFriendship = async (id: string) => {
   }
 };
 
-export default { createFriendship, deleteFriendship };
+const getUserFriends = async (userId: string) => {
+  try {
+    const id = createObjectId(userId);
+
+    const friendships = await Friendship.find({ users: { $in: id } });
+    const friends = friendships.reduce(
+      (arr, value) => arr.concat(value.users),
+      [] as any[]
+    );
+
+    return friends.filter((user) => user.toString() !== userId);
+  } catch (err) {
+    throw Error("Error getting user friends, friendship service");
+  }
+};
+
+export default { createFriendship, deleteFriendship, getUserFriends };

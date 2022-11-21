@@ -18,13 +18,34 @@ const data = {
       firstName: "Pedro",
       lastName: "Lopez",
     },
+    {
+      email: "randomemail@gmail.com",
+      password: "amrrrPa6,..",
+      passwordConfirm: "amrrrPa6,..",
+      birthday: "1991-01-01",
+      gender: "female",
+      firstName: "Jessica",
+      lastName: "Riveira",
+    },
   ],
   posts: [
     {
-      text: "For Casanova, as well as his coupper class, love and sex tended to be casual and",
-      videos: [],
+      text: "Ecuador won 2 zero against qatar",
+      videos: [{ url: "some:video" }, { url: "another video.com" }],
       photos: [],
       created_at: new Date("2022-10-10"),
+    },
+    {
+      text: "United States will play Gales at 16:00 hour Argentina.",
+      videos: [],
+      photos: [{ url: "a img" }, { url: "anohter img" }],
+      created_at: new Date("2022-10-01"),
+    },
+    {
+      text: "Netherlands is  going to play in a hour and a half",
+      videos: [{ url: "a video dou" }],
+      photos: [{ url: "anohter img" }],
+      created_at: new Date("2022-10-11"),
     },
   ],
 };

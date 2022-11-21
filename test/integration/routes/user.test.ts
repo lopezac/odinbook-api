@@ -9,7 +9,7 @@ import userRouter from "../../../src/routes/user.route";
 import authRouter from "../../../src/routes/auth.route";
 import User from "../../../src/models/user.model";
 import Post from "../../../src/models/post.model";
-import { UserType } from "../../../src/types/user.types";
+import Friendship from "../../../src/models/friendship.model";
 
 const app = express();
 
@@ -23,13 +23,24 @@ beforeAll(async () => await MongoServer.initialize());
 afterEach(async () => await MongoServer.clear());
 afterAll(async () => await MongoServer.close());
 beforeEach(async () => {
+  // create users
   for (const user of data.users) {
     await request(app).post("/sign-up").send(user);
   }
-  for (const post of data.posts) {
-    let p = new Post({...post, user: });
-    await p.save();
+
+  // create friendships
+  const users = await User.find({}).exec();
+  await Friendship.create({ users: [users[0]._id, users[1]._id] });
+  await Friendship.create({ users: [users[0]._id, users[2]._id] });
+
+  // create posts
+  for (const postData of data.posts) {
+    const user = await User.findOne({}).exec();
+    if (!user) return;
+    const post = new Post({ ...postData, user: user._id });
+    await post.save();
   }
+
   const { email, password } = data.users[0];
   const res = await request(app).post("/sign-in").send({ email, password });
   token = res.body.token;
@@ -79,8 +90,8 @@ describe("users", () => {
   test("get user posts works", async () => {
     const user = await User.findOne({}).exec();
     if (!user) return null;
-    const posts = await Post.find({ _id: user._id }).exec();
-    console.log("posts", posts);
+    const posts = await Post.find({ user: user._id }).exec();
+
     await request(app)
       .get(`/users/${user._id}/posts`)
       .then(async (res) => {
@@ -89,12 +100,81 @@ describe("users", () => {
         expect(res.body.length).not.toBe(0);
         for (let i = 0; i < res.body.length; i++) {
           expect(posts[i].text).toBe(res.body[i].text);
-          expect(posts[i].created_at).toBe(new Date(res.body[i].created_at));
+          expect(posts[i].created_at).toStrictEqual(
+            new Date(res.body[i].created_at)
+          );
           expect(posts[i].photos.length).toBe(res.body[i].photos.length);
           expect(posts[i].videos.length).toBe(res.body[i].videos.length);
-          expect(posts[i]._id).toStrictEqual(res.body[i]._id);
-          expect(posts[i].user).toStrictEqual(res.body[i].user);
+          expect(posts[i]._id.toString()).toEqual(res.body[i]._id);
+          expect(posts[i].user.toString()).toEqual(res.body[i].user);
         }
+      });
+  });
+
+  test("get user posts with photos works", async () => {
+    const user = await User.findOne({}).exec();
+    if (!user) return null;
+    const posts = await Post.find({
+      user: user._id,
+      photos: { $exists: true, $not: { $size: 0 } },
+    }).exec();
+
+    await request(app)
+      .get(`/users/${user._id}/photos`)
+      .then(async (res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).not.toBe(0);
+        for (let i = 0; i < res.body.length; i++) {
+          expect(posts[i].text).toBe(res.body[i].text);
+          expect(posts[i].created_at).toStrictEqual(
+            new Date(res.body[i].created_at)
+          );
+          expect(posts[i].photos.length).toBe(res.body[i].photos.length);
+          expect(posts[i].videos.length).toBe(res.body[i].videos.length);
+          expect(posts[i]._id.toString()).toEqual(res.body[i]._id);
+          expect(posts[i].user.toString()).toEqual(res.body[i].user);
+        }
+      });
+  });
+
+  test("get user posts with videos works", async () => {
+    const user = await User.findOne({}).exec();
+    if (!user) return null;
+    const posts = await Post.find({
+      user: user._id,
+      videos: { $exists: true, $not: { $size: 0 } },
+    }).exec();
+
+    await request(app)
+      .get(`/users/${user._id}/videos`)
+      .then(async (res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).not.toBe(0);
+        for (let i = 0; i < res.body.length; i++) {
+          expect(posts[i].text).toBe(res.body[i].text);
+          expect(posts[i].created_at).toStrictEqual(
+            new Date(res.body[i].created_at)
+          );
+          expect(posts[i].photos.length).toBe(res.body[i].photos.length);
+          expect(posts[i].videos.length).toBe(res.body[i].videos.length);
+          expect(posts[i]._id.toString()).toEqual(res.body[i]._id);
+          expect(posts[i].user.toString()).toEqual(res.body[i].user);
+        }
+      });
+  });
+
+  test("get user friends works", async () => {
+    const user = await User.findOne({}).exec();
+    if (!user) return null;
+
+    await request(app)
+      .get(`/users/${user._id}/friends`)
+      .then(async (res) => {
+        expect(res.statusCode).toBe(200);
+        expect(res.body.length).not.toBe(0);
+        expect(res.body.includes(user._id)).toBeFalsy();
+        expect(res.body[0].length).toBe(24);
+        expect(res.body[1].length).toBe(24);
       });
   });
 

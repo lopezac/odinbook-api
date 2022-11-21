@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  user: { type: mongoose.Types.ObjectId, required: true },
+  user: { type: String, minLength: 24, maxLength: 24, required: true },
   text: { type: String, minLength: 1, maxLength: 10000, required: true },
   photos: { type: Array, required: false },
   videos: { type: Array, required: false },
