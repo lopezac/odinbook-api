@@ -7,7 +7,7 @@
     "build": "npx tsc",
     "start": "node dist/src/index.js",
     "startDev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
-    "test": "jest --watch ./test/"
+    "test": "jest --watch test"
   },
   "repository": {
     "type": "git",

@@ -9,6 +9,7 @@ import postRouter from "../../../src/routes/post.route";
 import authRouter from "../../../src/routes/auth.route";
 import User from "../../../src/models/user.model";
 import Post from "../../../src/models/post.model";
+import Comment from "../../../src/models/post.model";
 
 const app = express();
 
@@ -33,6 +34,10 @@ beforeEach(async () => {
     if (!user) return;
     const post = new Post({ ...postData, user: user._id });
     await post.save();
+  }
+
+  // create comments
+  for (const comment of data.comments) {
   }
 
   const { email, password } = data.users[0];
@@ -120,6 +125,21 @@ describe("posts", () => {
         expect(foundPost.photos.length).toBe(res.body.photos.length);
         expect(foundPost.videos.length).toBe(res.body.videos.length);
         expect(foundPost.created_at).toStrictEqual(new Date(update.created_at));
+      });
+  });
+
+  test("delete post works", async () => {
+    const post = await Post.findOne();
+    if (!post) return;
+    await request(app)
+      .delete(`/posts/${post._id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .then(async (res) => {
+        expect(res.statusCode).toBe(200);
+        const foundPost = await Post.findOne({ _id: post._id });
+        const postComments = await Comment.find({ post: post._id });
+        expect(foundPost).toBeFalsy();
+        expect(postComments.length).toBe(0);
       });
   });
 });

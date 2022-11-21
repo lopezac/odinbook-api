@@ -48,6 +48,12 @@ const data = {
       created_at: new Date("2022-10-11"),
     },
   ],
+  comments: [
+    {
+      text: "",
+      created_at: "",
+    },
+  ],
 };
 
 export default data;
