@@ -62,6 +62,20 @@ const data = {
       created_at: new Date("2022-10-11"),
     },
   ],
+  messages: [
+    {
+      text: "hello bro",
+      created_at: new Date("2005-11-06"),
+    },
+    {
+      text: "why bro",
+      created_at: new Date("2003-11-06"),
+    },
+    {
+      text: "argentina loses at group stage",
+      created_at: new Date("2022-11-06"),
+    }
+  ]
 };
 
 export default data;

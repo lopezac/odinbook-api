@@ -118,7 +118,6 @@ describe("comments", () => {
   test("delete comment works", async () => {
     const comment = await Comment.findOne();
     if (!comment) return;
-    const likes = await Like.count({ receiver: comment._id });
 
     await request(app)
       .del(`/comments/${comment._id}`)
@@ -134,7 +133,7 @@ describe("comments", () => {
   });
 
   test("get comment likes works", async () => {
-    const comment = await Comment.findOne();
+    const comment = await Comment.findOne({});
     if (!comment) return;
     const likes = await Like.count({ receiver: comment._id });
 
@@ -144,6 +143,7 @@ describe("comments", () => {
         const foundLikes = await Like.count({ receiver: comment._id });
 
         expect(res.statusCode).toBe(200);
+        expect(foundLikes).toBeTruthy();
         expect(foundLikes).toEqual(likes);
       });
   });

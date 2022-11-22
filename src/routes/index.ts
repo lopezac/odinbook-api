@@ -6,7 +6,8 @@ import friendRequestRouter from "./friendRequest.route";
 import friendshipRouter from "./friendship.route";
 import likeRouter from "./like.route";
 import commentRouter from "./comment.route";
-// import messageRouter from "./message.route";
+import chatRouter from "./chat.route";
+import messageRouter from "./message.route";
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.use("/friend-requests", friendRequestRouter);
 router.use("/friendships", friendshipRouter);
 router.use("/likes", likeRouter);
 router.use("/comments", commentRouter);
-// router.use("/messages", messageRouter);
+router.use("/messages", messageRouter);
+router.use("/chats", chatRouter);
 
 export default router;
