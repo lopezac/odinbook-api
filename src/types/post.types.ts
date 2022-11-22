@@ -11,5 +11,4 @@ export type PostUpdate = {
   photos?: Object[];
   videos?: Object[];
   text?: string;
-  user?: string;
 };

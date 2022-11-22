@@ -1,5 +1,5 @@
 import Post from "../models/post.model";
-import { PostType } from "../types/post.types";
+import { PostType, PostUpdate } from "../types/post.types";
 
 async function createPost(postData: PostType) {
   try {
@@ -45,6 +45,22 @@ async function getUserPostsWithMedia(userId: string, mediaType: string) {
   }
 }
 
+async function updatePost(userId: string, postUpdate: PostUpdate) {
+  try {
+    return await Post.findByIdAndUpdate(userId, postUpdate);
+  } catch (err) {
+    throw Error("Error deleting post, post service");
+  }
+}
+
+async function deletePost(postId: string) {
+  try {
+    return await Post.findOneAndDelete({ post: postId });
+  } catch (err) {
+    throw Error("Error deleting post, post service");
+  }
+}
+
 async function deleteUserPosts(userId: string) {
   try {
     return await Post.deleteMany({ user: userId });
@@ -59,5 +75,7 @@ export default {
   getPost,
   getUserPosts,
   getUserPostsWithMedia,
+  updatePost,
+  deletePost,
   deleteUserPosts,
 };

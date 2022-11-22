@@ -7,7 +7,7 @@ const PostSchema = new Schema({
   text: { type: String, minLength: 1, maxLength: 10000, required: true },
   photos: { type: Array, required: false },
   videos: { type: Array, required: false },
-  created_at: { type: Date, default: new Date(), required: true },
+  created_at: { type: Date, default: new Date(), required: false },
 });
 
 const Post = mongoose.model("Post", PostSchema);

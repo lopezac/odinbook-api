@@ -50,8 +50,16 @@ const data = {
   ],
   comments: [
     {
-      text: "",
-      created_at: "",
+      text: "eeeeeeeeee",
+      created_at: new Date("2022-10-11"),
+    },
+    {
+      text: "oooooooooo",
+      created_at: new Date("2022-10-11"),
+    },
+    {
+      text: "aaaaaaaaaaa",
+      created_at: new Date("2022-10-11"),
     },
   ],
 };
