@@ -4,6 +4,6 @@ export const isObjectId = (string: string) => {
   return mongoose.isObjectIdOrHexString(string);
 };
 
-export const createObjectId = (string: string) => {
+export const createObjectId = (string: string | number) => {
   return new mongoose.Types.ObjectId(string);
 };

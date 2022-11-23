@@ -1,4 +1,3 @@
-
 import dotenv from "dotenv";
 import express from "express";
 import request from "supertest";
@@ -6,18 +5,19 @@ dotenv.config();
 
 import MongoServer from "../configs/db.config";
 import data from "../data";
-import commentRouter from "../../../src/routes/comment.route";
+import chatRouter from "../../../src/routes/chat.route";
 import authRouter from "../../../src/routes/auth.route";
 import Message from "../../../src/models/message.model";
 import Chat from "../../../src/models/chat.model";
 import User from "../../../src/models/user.model";
-import MessagesArray from "../../../src/types/messages.types.ts";
+import { MessagesArray } from "../../../src/types/message.types";
+import { createObjectId } from "../../../src/utils/mongoose.helper";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/comments", commentRouter);
+app.use("/chats", chatRouter);
 app.use("/", authRouter);
 
 let token: string;
@@ -31,17 +31,14 @@ beforeEach(async () => {
   }
 
   for (let i = 0; i < 2; i++) {
-    const user1 = await User.findOne({});
-    const user2 = await User.findOne({});
-    if (!user1 || !user2) return;
+    const users = await User.find({});
+    const chat = await Chat.create({ users: [users[0]._id, users[1]._id] });
 
-    const chat = await Chat.create({ users: [user1._id, user2._id] });
-
-    for (let x = 0; x <= Math.round(Math.random() * 4); x++) {
+    for (let x = 0; x <= Math.round(Math.random() * 3); x++) {
       await Message.create({
         ...data.messages[x],
-        receiver: user1._id,
-        emitter: user2._id,
+        receiver: users[0]._id,
+        emitter: users[1]._id,
         chat: chat._id,
       });
     }
@@ -54,8 +51,8 @@ beforeEach(async () => {
 
 describe("chats", () => {
   test("create chat works", async () => {
-    const users = ["12345678901234567890abcd", "2a345678901234567890abcd"];
-    const chatData = { users };
+    const users = [createObjectId(1), createObjectId(2)];
+    const chatData = { users: [users[0].toString(), users[1].toString()] };
 
     await request(app)
       .post("/chats")
@@ -63,37 +60,45 @@ describe("chats", () => {
       .send(chatData)
       .then(async (res) => {
         const chat = await Chat.findOne({
-          users: { $in: [users[0], users[1]] }
+          users: { $in: [users[0].toString(), users[1].toString()] },
         });
-        if (!chat) return;
 
+        expect(chat).toBeTruthy();
         expect(res.statusCode).toBe(200);
-        expect(chat.users.length).toEqual(chatData.users.length);
 
-        for (let i = 0; i < chat.users.length; i++) {
-          expect(chat.users[i]).toEqual(chatData.users[i]);
+        if (chat) {
+          expect(chat.users.length).toEqual(chatData.users.length);
+          for (let i = 0; i < chat.users.length; i++) {
+            expect(chat.users[i]).toEqual(chatData.users[i]);
+          }
         }
       });
   });
 
   test("get chat messages works", async () => {
     const chat = await Chat.findOne({});
-    const foundMessages = await Message.find({ chat: chat._id });
     if (!chat) return;
+    const foundMessages = await Message.find({ chat: chat._id });
 
     await request(app)
       .get(`/chats/${chat._id}/messages`)
       .set("Authorization", `Bearer ${token}`)
       .then(async (res) => {
-        const { messages } = res.body as MessagesArray;
+        const messages: MessagesArray = res.body;
 
         expect(res.statusCode).toBe(200);
         expect(messages.length).not.toBe(0);
 
         for (let i = 0; i < foundMessages.length; i++) {
-          expect(foundMessages[i]._id.toString()).toStrictEqual(messages[i]._id);
-          expect(foundMessages[i].emitter.toString()).toStrictEqual(messages[i].emitter);
-          expect(foundMessages[i].receiver.toString()).toStrictEqual(messages[i].receiver);
+          expect(foundMessages[i]._id.toString()).toStrictEqual(
+            messages[i]._id
+          );
+          expect(foundMessages[i].emitter.toString()).toStrictEqual(
+            messages[i].emitter
+          );
+          expect(foundMessages[i].receiver.toString()).toStrictEqual(
+            messages[i].receiver
+          );
           expect(foundMessages[i].created_at).toStrictEqual(
             new Date(messages[i].created_at)
           );
@@ -111,7 +116,8 @@ describe("chats", () => {
       .set("Authorization", `Bearer ${token}`)
       .then(async (res) => {
         const foundChat = await Chat.findById(chat._id);
-        const foundMessages = await Message.find({ chat: foundChat._id })
+        if (!foundChat) return;
+        const foundMessages = await Message.find({ chat: foundChat._id });
 
         expect(res.statusCode).toBe(200);
         expect(foundChat).toBeFalsy();
@@ -119,4 +125,3 @@ describe("chats", () => {
       });
   });
 });
-

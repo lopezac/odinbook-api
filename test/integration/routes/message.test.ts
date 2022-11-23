@@ -5,15 +5,17 @@ dotenv.config();
 
 import MongoServer from "../configs/db.config";
 import data from "../data";
-import commentRouter from "../../../src/routes/comment.route";
+import messageRouter from "../../../src/routes/message.route";
 import authRouter from "../../../src/routes/auth.route";
 import Message from "../../../src/models/message.model";
+import User from "../../../src/models/user.model";
+import Chat from "../../../src/models/chat.model";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/comments", commentRouter);
+app.use("/messages", messageRouter);
 app.use("/", authRouter);
 
 let token: string;
@@ -26,6 +28,12 @@ beforeEach(async () => {
     await request(app).post("/sign-up").send(user);
   }
 
+  for (let i = 0; i < 3; i++) {
+    const users = await User.find({});
+
+    await Chat.create({ users: [users[0]._id, users[1]._id] });
+  }
+
   const { email, password } = data.users[0];
   const res = await request(app).post("/sign-in").send({ email, password });
   token = res.body.token;
@@ -33,7 +41,15 @@ beforeEach(async () => {
 
 describe("messages", () => {
   test("create message works", async () => {
-    const msgData = data.messages[0];
+    const chat = await Chat.findOne({});
+    const users = await User.find({});
+    if (!chat) return;
+    const msgData = {
+      ...data.messages[0],
+      chat: chat._id,
+      emitter: users[0]._id,
+      receiver: users[1]._id,
+    };
 
     await request(app)
       .post("/messages")
@@ -44,30 +60,35 @@ describe("messages", () => {
           chat: msgData.chat,
           receiver: msgData.receiver,
           emitter: msgData.emitter,
+          text: msgData.text,
+          created_at: msgData.created_at,
         });
-        if (!msg) return;
 
+        expect(msg).toBeTruthy();
         expect(res.statusCode).toBe(200);
-        expect(msg.chat.toString()).toStrictEqual(msgData.chat);
-        expect(msg.receiver.toString()).toStrictEqual(msgData.receiver);
-        expect(msg.emitter.toString()).toStrictEqual(msgData.emitter);
-        expect(msg.text).toStrictEqual(msgData.text);
+
+        if (!msg) return;
+        expect(msg.chat).toEqual(msgData.chat.toString());
+        expect(msg.receiver).toEqual(msgData.receiver.toString());
+        expect(msg.emitter).toEqual(msgData.emitter.toString());
+        expect(msg.text).toEqual(msgData.text);
         expect(msg.created_at).toStrictEqual(new Date(msgData.created_at));
       });
   });
 
   test("delete message works", async () => {
-    const msg = await Message.create(data.messages[1]);
+    const message = await Message.findOne({});
+    if (!message) return;
 
     await request(app)
-      .delete(`/messages/${msg._id}`)
+      .del(`/messages/${message._id}`)
       .set("Authorization", `Bearer ${token}`)
       .then(async (res) => {
-        const msg = await Message.findById(msg._id);
+        const foundMessage = await Message.findById(message._id);
 
         expect(res.statusCode).toBe(200);
-        expect(msg).toBeFalsy();
+        expect(message).toBeTruthy();
+        expect(foundMessage).toBeFalsy();
       });
   });
 });
-

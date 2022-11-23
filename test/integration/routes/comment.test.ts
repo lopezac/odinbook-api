@@ -135,16 +135,15 @@ describe("comments", () => {
   test("get comment likes works", async () => {
     const comment = await Comment.findOne({});
     if (!comment) return;
-    const likes = await Like.count({ receiver: comment._id });
+    const commentLikes = await Like.count({ receiver: comment._id });
 
     await request(app)
-      .get(`/comments/${comment._id}`)
+      .get(`/comments/${comment._id}/likes`)
       .then(async (res) => {
-        const foundLikes = await Like.count({ receiver: comment._id });
-
+        const likes: number = res.body;
         expect(res.statusCode).toBe(200);
-        expect(foundLikes).toBeTruthy();
-        expect(foundLikes).toEqual(likes);
+        expect(likes).toBeTruthy();
+        expect(likes).toEqual(commentLikes);
       });
   });
 });

@@ -6,11 +6,9 @@ const router = express.Router();
 
 router.post("/", AuthMiddleware.JwtAuth(), CommentController.comments_post);
 
-router.get(
-  "/:commentId",
-  AuthMiddleware.JwtAuth(),
-  CommentController.comments_id_get
-);
+router.get("/:commentId", CommentController.comments_id_get);
+
+router.get("/:commentId/likes", CommentController.comments_id_likes_get);
 
 router.put(
   "/:commentId",
