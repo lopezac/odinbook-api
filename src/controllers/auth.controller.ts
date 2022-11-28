@@ -18,7 +18,7 @@ const signUpPost = async (req: Request, res: Response) => {
       gender,
       password: hashedPassword,
     });
-    return res.json(user);
+    return res.json({ message: "Success creating user" });
   } catch (err) {
     return res
       .status(503)

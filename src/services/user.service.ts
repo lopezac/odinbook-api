@@ -1,7 +1,6 @@
 import { UserType, UserUpdate } from "../types/user.types";
 import { ReturnQuery } from "../types/request.types";
 import User from "../models/user.model";
-import Friendship from "../models/friendship.model";
 
 async function createUser(userData: UserType) {
   try {
