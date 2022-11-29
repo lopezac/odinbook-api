@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import createError from "http-errors";
 import logger from "morgan";
+import cors, { CorsOptions } from "cors";
 dotenv.config();
 
 import indexRoute from "./routes/index";
@@ -10,6 +11,18 @@ import "./configs/db.config";
 const app = express();
 const port = process.env.PORT;
 
+const whiteList = ["http://localhost:3000"];
+
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    if (whiteList.indexOf(origin!) !== -1) {
+      return callback(null, true);
+    }
+    return callback(new Error("Origin not allowed by CORS"));
+  },
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
