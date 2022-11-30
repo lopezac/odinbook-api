@@ -44,8 +44,7 @@ const signIn = [
   body("email", "Incorrect email").normalizeEmail().isEmail(),
   body("password", "Incorrect password")
     .trim()
-    .isLength({ min: 7 })
-    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/)
+    // maybe remove escape cus it deletes special characters
     .escape(),
 ];
 
