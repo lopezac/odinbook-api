@@ -8,9 +8,11 @@ const signUpPost = async (req: Request, res: Response) => {
     const { firstName, lastName, email, birthday, gender, password } =
       req.body as UserType;
     if (!password) return;
+
     const hashedPassword = await hashPassword(password);
     if (hashedPassword instanceof Error) return;
-    const user = await UserService.createUser({
+
+    await UserService.createUser({
       firstName,
       lastName,
       email,
@@ -18,6 +20,7 @@ const signUpPost = async (req: Request, res: Response) => {
       gender,
       password: hashedPassword,
     });
+
     return res.json({ message: "Success creating user" });
   } catch (err) {
     return res
@@ -29,8 +32,10 @@ const signUpPost = async (req: Request, res: Response) => {
 const signInPost = async (req: Request, res: Response) => {
   try {
     const user = req.body;
+
     const token = await createToken(user);
-    return res.json({ token });
+
+    return res.json({ user, token });
   } catch (err) {
     return res
       .status(503)
