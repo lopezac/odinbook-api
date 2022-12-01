@@ -46,6 +46,7 @@ const signIn = [
     .trim()
     // maybe remove escape cus it deletes special characters
     .escape(),
+  validationErrors,
 ];
 
 export default { signIn, signUp };

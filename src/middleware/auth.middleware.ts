@@ -12,9 +12,11 @@ passport.use(
   new LocalStrategy(UserConfig, (username, password, done) => {
     User.findOne({ email: username }).exec((err, user) => {
       if (err) return done(err);
+
       if (!user || !user.password) {
-        return done(null, false, { message: "User was not found" });
+        return done(null, false, { message: "Email is incorrect" });
       }
+
       bcrypt.compare(password, user.password, (err, result) => {
         if (err) return done(err);
         if (!result) {

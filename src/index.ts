@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import createError from "http-errors";
 import logger from "morgan";
+import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
 dotenv.config();
 
@@ -23,6 +24,7 @@ const corsOptions: CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));

@@ -32,6 +32,14 @@ async function getUser(userId: string) {
   }
 }
 
+async function getUserByEmail(email: string) {
+  try {
+    return await User.findOne({ email }).exec();
+  } catch (err) {
+    throw Error("Error getting user by email, user service");
+  }
+}
+
 async function updateUser(userId: string, update: UserUpdate) {
   try {
     return await User.findByIdAndUpdate(userId, update).exec();
@@ -52,6 +60,7 @@ export default {
   createUser,
   getUsers,
   getUser,
+  getUserByEmail,
   updateUser,
   deleteUser,
 };

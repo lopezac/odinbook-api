@@ -31,11 +31,13 @@ const signUpPost = async (req: Request, res: Response) => {
 
 const signInPost = async (req: Request, res: Response) => {
   try {
-    const user = req.body;
+    const userLogin = req.body;
+    const user = await UserService.getUserByEmail(userLogin.email);
+    console.log("user at signInPost", user);
 
-    const token = await createToken(user);
+    const token = await createToken(userLogin);
 
-    return res.json({ user, token });
+    return res.json({ data: user, token });
   } catch (err) {
     return res
       .status(503)
