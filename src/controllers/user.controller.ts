@@ -82,9 +82,9 @@ async function id_put(req: Request, res: Response) {
     const { userId } = req.params;
     const update = req.body as UserUpdate;
 
-    await UserService.updateUser(userId, update);
+    const user = await UserService.updateUser(userId, update);
 
-    return res.json(userId);
+    return res.json({user});
   } catch (err) {
     return res
       .status(503)

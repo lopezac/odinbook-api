@@ -1,6 +1,7 @@
 import express from "express";
 import UserController from "../controllers/user.controller";
 import AuthMiddleware from "../middleware/auth.middleware";
+import AuthVal from "../middleware/auth.validation";
 
 const router = express.Router();
 
@@ -18,6 +19,6 @@ router.get("/:userId/friends", UserController.id_friends_get);
 
 router.delete("/:userId", AuthMiddleware.JwtAuth(), UserController.id_delete);
 
-router.put("/:userId", AuthMiddleware.JwtAuth(), UserController.id_put);
+router.put("/:userId", AuthVal.update, AuthMiddleware.JwtAuth(), UserController.id_put);
 
 export default router;
