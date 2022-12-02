@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Query } from "../types/request.types";
 import { UserUpdate } from "../types/user.types";
+import { hashPassword } from "../services/auth.service";
 import UserService from "../services/user.service";
 import PostService from "../services/post.service";
 import FriendshipService from "../services/friendship.service";
@@ -82,9 +83,14 @@ async function id_put(req: Request, res: Response) {
     const { userId } = req.params;
     const update = req.body as UserUpdate;
 
-    const user = await UserService.updateUser(userId, update);
+    if (update.password) {
+      const hashedPassword = await hashPassword(update.password);
+      update.password = hashedPassword;
+    }
+    await UserService.updateUser(userId, update);
+    const updatedUser = await UserService.getUser(userId);
 
-    return res.json({user});
+    return res.json({ user: updatedUser });
   } catch (err) {
     return res
       .status(503)

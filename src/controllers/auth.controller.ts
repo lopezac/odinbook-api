@@ -10,8 +10,6 @@ const signUpPost = async (req: Request, res: Response) => {
     if (!password) return;
 
     const hashedPassword = await hashPassword(password);
-    if (hashedPassword instanceof Error) return;
-
     await UserService.createUser({
       firstName,
       lastName,
@@ -33,7 +31,6 @@ const signInPost = async (req: Request, res: Response) => {
   try {
     const userLogin = req.body;
     const user = await UserService.getUserByEmail(userLogin.email);
-    console.log("user at signInPost", user);
 
     const token = await createToken(userLogin);
 
