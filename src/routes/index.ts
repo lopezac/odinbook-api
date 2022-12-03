@@ -8,10 +8,12 @@ import likeRouter from "./like.route";
 import commentRouter from "./comment.route";
 import chatRouter from "./chat.route";
 import messageRouter from "./message.route";
+import uploadRouter from "./upload.route";
 
 const router = express.Router();
 
-router.use("/", authRouter);
+router.use("/", authRouter); // try to do authRouter, uploadRouter maybe
+router.use("/", uploadRouter);
 router.use("/posts", postRouter);
 router.use("/users", userRouter);
 router.use("/friend-requests", friendRequestRouter);
