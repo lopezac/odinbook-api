@@ -1,5 +1,6 @@
 import Post from "../models/post.model";
 import { PostType, PostUpdate } from "../types/post.types";
+import { ReturnQuery } from "../types/request.types";
 
 async function createPost(postData: PostType) {
   try {
@@ -34,14 +35,20 @@ async function getUserPosts(userId: string) {
   }
 }
 
-async function getUserPostsWithMedia(userId: string, mediaType: string) {
+async function getUserPostsWithMedia(userId: string, mediaType: string, { filter, page, sort }: ReturnQuery) {
   try {
     return await Post.find({
       user: userId,
       [mediaType]: { $exists: true, $not: { $size: 0 } },
-    }).exec();
+    })
+    .sort(sort)
+    .limit(10)
+    .skip(page)
+    .exec();
   } catch (err) {
-    throw Error("Error getting user posts, post service");
+    throw Error(
+      `Error getting user posts with media ${mediaType}, post service`
+    );
   }
 }
 

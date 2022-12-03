@@ -52,9 +52,10 @@ async function id_posts_get(req: Request, res: Response) {
 async function id_posts_media_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
+    const query = getQueryParams(req.query as Query);
     const mediaType = getLastPathWord(req.originalUrl);
 
-    const posts = await PostService.getUserPostsWithMedia(userId, mediaType);
+    const posts = await PostService.getUserPostsWithMedia(userId, mediaType, query);
 
     return res.json(posts);
   } catch (err) {
