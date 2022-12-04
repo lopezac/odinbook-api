@@ -62,6 +62,7 @@ async function posts_id_likes_get(req: Request, res: Response) {
 async function posts_post(req: Request, res: Response) {
   try {
     const { text, photos, videos, created_at, user } = req.body as PostType;
+
     const post = await PostService.createPost({
       text,
       photos,
@@ -69,6 +70,7 @@ async function posts_post(req: Request, res: Response) {
       created_at,
       user,
     });
+
     return res.json(post);
   } catch (err) {
     return res
