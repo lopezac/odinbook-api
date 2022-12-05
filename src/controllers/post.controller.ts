@@ -102,7 +102,7 @@ async function posts_id_delete(req: Request, res: Response) {
     await LikeService.deleteByReceiver(postId);
     await PostService.deletePost(postId);
 
-    return res.json(postId);
+    return res.json({ success: true });
   } catch (err) {
     return res
       .status(500)

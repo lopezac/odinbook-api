@@ -27,7 +27,7 @@ async function id_get(req: Request, res: Response) {
 
     const user = await UserService.getUser(userId);
 
-    return res.json(user);
+    return res.json({ user });
   } catch (err) {
     return res
       .status(503)
@@ -41,7 +41,7 @@ async function id_posts_get(req: Request, res: Response) {
 
     const posts = await PostService.getUserPosts(userId);
 
-    return res.json(posts);
+    return res.json({ posts });
   } catch (err) {
     return res
       .status(503)
@@ -55,7 +55,11 @@ async function id_posts_media_get(req: Request, res: Response) {
     const query = getQueryParams(req.query as Query);
     const mediaType = getLastPathWord(req.originalUrl);
 
-    const posts = await PostService.getUserPostsWithMedia(userId, mediaType, query);
+    const posts = await PostService.getUserPostsWithMedia(
+      userId,
+      mediaType,
+      query
+    );
 
     return res.json(posts);
   } catch (err) {
