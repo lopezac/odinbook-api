@@ -21,7 +21,7 @@ async function posts_id_get(req: Request, res: Response) {
 
     const post = await PostService.getPost(postId);
 
-    return res.json(post);
+    return res.json({ post });
   } catch (err) {
     return res
       .status(500)
@@ -35,7 +35,7 @@ async function posts_id_comments_get(req: Request, res: Response) {
 
     const comments = await CommentService.getPostComments(postId);
 
-    return res.json(comments);
+    return res.json({ comments });
   } catch (err) {
     return res.status(500).json({
       message: "Error at posts_id_comments_get, post controller",
@@ -82,11 +82,12 @@ async function posts_post(req: Request, res: Response) {
 async function posts_id_put(req: Request, res: Response) {
   try {
     const { postId } = req.params;
+    console.log("req.body", req.body);
     const postUpdate = req.body as PostUpdate;
 
-    await PostService.updatePost(postId, postUpdate);
+    const post = await PostService.updatePost(postId, postUpdate);
 
-    return res.json(postId);
+    return res.json({ post });
   } catch (err) {
     return res
       .status(500)

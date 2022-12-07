@@ -82,7 +82,7 @@ const update = [
     .withMessage("Email is already in use"),
   body("gender").optional(),
   body("birthday", "Must select a valid birthday")
-    .optional()
+    .optional() // check if can remove this
     .isISO8601()
     .toDate(),
   validationErrors,

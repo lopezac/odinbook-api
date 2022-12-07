@@ -1,10 +1,16 @@
 import express from "express";
 import AuthMiddleware from "../middleware/auth.middleware";
 import CommentController from "../controllers/comment.controller";
+import CommentVal from "../middleware/comment.validation";
 
 const router = express.Router();
 
-router.post("/", AuthMiddleware.JwtAuth(), CommentController.comments_post);
+router.post(
+  "/",
+  CommentVal.create,
+  AuthMiddleware.JwtAuth(),
+  CommentController.comments_post
+);
 
 router.get("/:commentId", CommentController.comments_id_get);
 

@@ -9,7 +9,7 @@ async function comments_post(req: Request, res: Response) {
 
     const comment = await CommentService.createComment(commentData);
 
-    return res.json(comment);
+    return res.json({ comment });
   } catch (err) {
     return res
       .status(503)
@@ -39,12 +39,10 @@ async function comments_id_likes_get(req: Request, res: Response) {
 
     return res.json(likes);
   } catch (err) {
-    return res
-      .status(503)
-      .json({
-        message: "Error at comments_id_likes_get, Comment controller",
-        err,
-      });
+    return res.status(503).json({
+      message: "Error at comments_id_likes_get, Comment controller",
+      err,
+    });
   }
 }
 
