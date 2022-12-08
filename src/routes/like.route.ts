@@ -8,6 +8,8 @@ router.post("/", AuthMiddleware.JwtAuth(), LikeController.likes_post);
 
 router.get("/", LikeController.likes_get);
 
+router.get("/count", LikeController.likes_count_get);
+
 router.delete("/", AuthMiddleware.JwtAuth(), LikeController.likes_delete);
 
 export default router;

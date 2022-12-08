@@ -32,6 +32,23 @@ async function likes_get(req: Request, res: Response) {
   }
 }
 
+// this function can be used to get user count, for example,
+// but here I specifically use it to get receiver count
+async function likes_count_get(req: Request, res: Response) {
+  try {
+    const receiver = req.query.receiver as string;
+    if (!receiver) return res.json({"message": "not found"});
+
+    const likes = await LikeService.getReceiverLikes(receiver);
+
+    return res.json({ likes });
+  } catch (err) {
+    return res
+      .status(503)
+      .json({ message: "Error at likes_count_get, like controller", err });
+  }
+}
+
 async function likes_delete(req: Request, res: Response) {
   try {
     const query = getQueryParams(req.query as Query);
@@ -46,4 +63,4 @@ async function likes_delete(req: Request, res: Response) {
   }
 }
 
-export default { likes_post, likes_get, likes_delete };
+export default { likes_post, likes_get, likes_count_get, likes_delete };

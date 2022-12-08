@@ -13,7 +13,7 @@ async function get(req: Request, res: Response) {
 
     const users = await UserService.getUsers(query);
 
-    return res.json(users);
+    return res.json({ users });
   } catch (err) {
     return res
       .status(503)
