@@ -140,7 +140,7 @@ describe("comments", () => {
     await request(app)
       .get(`/comments/${comment._id}/likes`)
       .then(async (res) => {
-        const likes: number = res.body;
+        const likes: number = res.body.likes;
         expect(res.statusCode).toBe(200);
         expect(likes).toBeTruthy();
         expect(likes).toEqual(commentLikes);

@@ -61,4 +61,38 @@ describe("likes", () => {
         expect(postLikes).toEqual(1);
       });
   });
+
+  test("delete like works", async () => {
+    const post = await Post.findOne();
+    const user = await User.findOne();
+    if (!post || !user) return;
+    const likeOne = await Like.create({
+      user: user._id,
+      receiver: post._id,
+      text: "shiro ishii",
+    });
+    const likeTwo = await Like.create({
+      user: user._id,
+      receiver: post._id,
+      text: "squad 731",
+    });
+
+    await request(app)
+      .delete(`/likes/${likeOne._id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ receiver: post._id, user: user._id })
+      .then(async (res) => {
+        expect(res.statusCode).toBe(200);
+        const postLikes = await Like.count({
+          receiver: post._id,
+          user: user._id,
+        });
+        const likeOneFound = await Like.findById(likeOne._id);
+        const likeTwoFound = await Like.findById(likeTwo._id);
+        expect(postLikes).toBeTruthy();
+        expect(postLikes).toEqual(1);
+        expect(likeOneFound).toBeFalsy();
+        expect(likeTwoFound).toBeTruthy();
+      });
+  });
 });

@@ -4,6 +4,10 @@ import LikeController from "../controllers/like.controller";
 
 const router = express.Router();
 
-router.post("/", AuthMiddleware.JwtAuth(), LikeController.comments_post);
+router.post("/", AuthMiddleware.JwtAuth(), LikeController.likes_post);
+
+router.get("/", LikeController.likes_get);
+
+router.delete("/", AuthMiddleware.JwtAuth(), LikeController.likes_delete);
 
 export default router;

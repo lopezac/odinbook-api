@@ -36,7 +36,8 @@ beforeEach(async () => {
 
     for (let x = 0; x <= Math.round(Math.random() * 3); x++) {
       await Message.create({
-        ...data.messages[x],
+        text: data.messages[x].text,
+        created_at: data.messages[x].created_at,
         receiver: users[0]._id,
         emitter: users[1]._id,
         chat: chat._id,

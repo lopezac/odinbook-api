@@ -109,12 +109,13 @@ describe("posts", () => {
     await request(app)
       .get(`/posts/${post._id}`)
       .then(async (res) => {
+        const foundPost = res.body.post;
         expect(res.statusCode).toBe(200);
-        expect(res.body._id).toStrictEqual(post._id.toString());
-        expect(res.body.text).toBe(post.text);
-        expect(res.body.photos.length).toBe(post.photos.length);
-        expect(res.body.videos.length).toBe(post.videos.length);
-        expect(res.body.user).toStrictEqual(post.user.toString());
+        expect(foundPost._id).toStrictEqual(post._id.toString());
+        expect(foundPost.text).toBe(post.text);
+        expect(foundPost.photos.length).toBe(post.photos.length);
+        expect(foundPost.videos.length).toBe(post.videos.length);
+        expect(foundPost.user).toStrictEqual(post.user.toString());
       });
   });
 

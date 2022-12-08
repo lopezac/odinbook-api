@@ -61,7 +61,7 @@ async function id_posts_media_get(req: Request, res: Response) {
       query
     );
 
-    return res.json(posts);
+    return res.json({ posts });
   } catch (err) {
     return res
       .status(503)

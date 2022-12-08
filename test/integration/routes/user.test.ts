@@ -56,14 +56,15 @@ describe("users", () => {
     await request(app)
       .get(`/users/${users[0]._id}`)
       .then(async (res) => {
+        const foundUser = res.body.user;
         expect(res.statusCode).toBe(200);
-        expect(users[0].firstName).toBe(res.body.firstName);
-        expect(users[0].lastName).toBe(res.body.lastName);
-        expect(users[0].birthday).toStrictEqual(new Date(res.body.birthday));
-        expect(users[0].password).toBe(res.body.password);
-        expect(users[0].email).toBe(res.body.email);
-        expect(users[0].gender).toBe(res.body.gender);
-        expect(res.body._id).toBeTruthy();
+        expect(users[0].firstName).toBe(foundUser.firstName);
+        expect(users[0].lastName).toBe(foundUser.lastName);
+        expect(users[0].birthday).toStrictEqual(new Date(foundUser.birthday));
+        expect(users[0].password).toBe(foundUser.password);
+        expect(users[0].email).toBe(foundUser.email);
+        expect(users[0].gender).toBe(foundUser.gender);
+        expect(foundUser._id).toBeTruthy();
       });
   });
 
@@ -95,18 +96,20 @@ describe("users", () => {
     await request(app)
       .get(`/users/${user._id}/posts`)
       .then(async (res) => {
+        const foundPosts = res.body.posts;
+
         expect(res.statusCode).toBe(200);
         expect(posts.length).not.toBe(0);
-        expect(res.body.length).not.toBe(0);
-        for (let i = 0; i < res.body.length; i++) {
-          expect(posts[i].text).toBe(res.body[i].text);
+        expect(foundPosts.length).not.toBe(0);
+        for (let i = 0; i < foundPosts.length; i++) {
+          expect(posts[i].text).toBe(foundPosts[i].text);
           expect(posts[i].created_at).toStrictEqual(
-            new Date(res.body[i].created_at)
+            new Date(foundPosts[i].created_at)
           );
-          expect(posts[i].photos.length).toBe(res.body[i].photos.length);
-          expect(posts[i].videos.length).toBe(res.body[i].videos.length);
-          expect(posts[i]._id.toString()).toEqual(res.body[i]._id);
-          expect(posts[i].user.toString()).toEqual(res.body[i].user);
+          expect(posts[i].photos.length).toBe(foundPosts[i].photos.length);
+          expect(posts[i].videos.length).toBe(foundPosts[i].videos.length);
+          expect(posts[i]._id.toString()).toEqual(foundPosts[i]._id);
+          expect(posts[i].user.toString()).toEqual(foundPosts[i].user);
         }
       });
   });
@@ -117,22 +120,26 @@ describe("users", () => {
     const posts = await Post.find({
       user: user._id,
       photos: { $exists: true, $not: { $size: 0 } },
-    }).exec();
+    })
+      .sort("-_id")
+      .exec();
 
     await request(app)
       .get(`/users/${user._id}/photos`)
       .then(async (res) => {
+        const foundPosts = res.body.posts;
+
         expect(res.statusCode).toBe(200);
-        expect(res.body.length).not.toBe(0);
-        for (let i = 0; i < res.body.length; i++) {
-          expect(posts[i].text).toBe(res.body[i].text);
+        expect(foundPosts.length).not.toBe(0);
+        for (let i = 0; i < foundPosts.length; i++) {
+          expect(posts[i].text).toBe(foundPosts[i].text);
           expect(posts[i].created_at).toStrictEqual(
-            new Date(res.body[i].created_at)
+            new Date(foundPosts[i].created_at)
           );
-          expect(posts[i].photos.length).toBe(res.body[i].photos.length);
-          expect(posts[i].videos.length).toBe(res.body[i].videos.length);
-          expect(posts[i]._id.toString()).toEqual(res.body[i]._id);
-          expect(posts[i].user.toString()).toEqual(res.body[i].user);
+          expect(posts[i].photos.length).toBe(foundPosts[i].photos.length);
+          expect(posts[i].videos.length).toBe(foundPosts[i].videos.length);
+          expect(posts[i]._id.toString()).toEqual(foundPosts[i]._id);
+          expect(posts[i].user.toString()).toEqual(foundPosts[i].user);
         }
       });
   });

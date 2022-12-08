@@ -23,7 +23,7 @@ async function comments_id_get(req: Request, res: Response) {
 
     const comment = await CommentService.getComment(commentId);
 
-    return res.json(comment);
+    return res.json({ comment });
   } catch (err) {
     return res
       .status(503)
@@ -37,7 +37,7 @@ async function comments_id_likes_get(req: Request, res: Response) {
 
     const likes = await LikeService.getReceiverLikes(commentId);
 
-    return res.json(likes);
+    return res.json({ likes });
   } catch (err) {
     return res.status(503).json({
       message: "Error at comments_id_likes_get, Comment controller",
@@ -56,7 +56,7 @@ async function comments_id_put(req: Request, res: Response) {
       commentUpdate
     );
 
-    return res.json(comment);
+    return res.json({ comment });
   } catch (err) {
     return res
       .status(503)
@@ -71,7 +71,7 @@ async function comments_id_delete(req: Request, res: Response) {
     await CommentService.deleteComment(commentId);
     await LikeService.deleteByReceiver(commentId);
 
-    return res.json(commentId);
+    return res.json({ commentId });
   } catch (err) {
     return res.status(503).json({
       message: "Error at comments_id_delete, Comment controller",
