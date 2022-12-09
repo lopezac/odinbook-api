@@ -7,7 +7,8 @@ import { PostType, PostUpdate } from "../types/post.types";
 async function posts_get(req: Request, res: Response) {
   try {
     const posts = await PostService.getPosts();
-    return res.json(posts);
+
+    return res.json({ posts });
   } catch (err) {
     return res
       .status(500)
