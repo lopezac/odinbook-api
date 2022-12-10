@@ -9,6 +9,7 @@ import { getLastPathWord, getQueryParams } from "../utils/query.helper";
 
 async function get(req: Request, res: Response) {
   try {
+    console.log("get users ")
     const query = getQueryParams(req.query as Query);
 
     const users = await UserService.getUsers(query);

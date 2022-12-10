@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import FriendReqService from "../services/friendRequest.service";
 import FriendshipService from "../services/friendship.service";
+import { getQueryParams } from "../utils/query.helper";
+import { Query } from "../types/request.types";
 
 type friendReq = { emitter: string; receiver: string };
 
@@ -18,17 +20,17 @@ async function post(req: Request, res: Response) {
   }
 }
 
-async function id_delete(req: Request, res: Response) {
+async function get(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const query = getQueryParams(req.query as Query);
 
-    await FriendReqService.deleteFriendReq(id);
+    const friendRequests = await FriendReqService.getFriendRequests(query);
 
-    return res.json({ friendRequestId: id });
+    return res.json({ friendRequests });
   } catch (err) {
     return res
       .status(500)
-      .json({ message: "Error at id_delete(), friendRequest controller", err });
+      .json({ message: "Error at post(), friendRequest controller", err });
   }
 }
 
@@ -54,4 +56,18 @@ async function id_post(req: Request, res: Response) {
   }
 }
 
-export default { post, id_delete, id_post };
+async function id_delete(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    await FriendReqService.deleteFriendReq(id);
+
+    return res.json({ friendRequestId: id });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Error at id_delete(), friendRequest controller", err });
+  }
+}
+
+export default { post, get, id_post, id_delete };

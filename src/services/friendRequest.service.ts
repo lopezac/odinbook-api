@@ -1,5 +1,6 @@
 import { createObjectId } from "../utils/mongoose.helper";
 import FriendRequest from "../models/friendRequest.model";
+import { ReturnQuery } from "../types/request.types";
 
 const createFriendReq = async (emitter: string, receiver: string) => {
   try {
@@ -15,13 +16,14 @@ const createFriendReq = async (emitter: string, receiver: string) => {
   }
 };
 
-const deleteFriendReq = async (id: string) => {
+const getFriendRequests = async ({ filter, page, sort }: ReturnQuery) => {
   try {
-    return await FriendRequest.findByIdAndDelete(id).exec();
+    return await FriendRequest.find(filter).exec();
   } catch (err) {
-    throw Error("Error deleting friend request at service");
+    throw Error("Error getting friend requests at service");
   }
 };
+
 
 const getFriendReq = async (id: string) => {
   try {
@@ -31,4 +33,12 @@ const getFriendReq = async (id: string) => {
   }
 };
 
-export default { createFriendReq, deleteFriendReq, getFriendReq };
+const deleteFriendReq = async (id: string) => {
+  try {
+    return await FriendRequest.findByIdAndDelete(id).exec();
+  } catch (err) {
+    throw Error("Error deleting friend request at service");
+  }
+};
+
+export default { createFriendReq, getFriendRequests, getFriendReq, deleteFriendReq };
