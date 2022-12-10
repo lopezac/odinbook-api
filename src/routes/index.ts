@@ -8,12 +8,11 @@ import likeRouter from "./like.route";
 import commentRouter from "./comment.route";
 import chatRouter from "./chat.route";
 import messageRouter from "./message.route";
-import uploadRouter from "./upload.route";
+import notificationRouter from "./notification.route";
 
 const router = express.Router();
 
 router.use("/", authRouter); // try to do authRouter, uploadRouter maybe
-router.use("/", uploadRouter);
 router.use("/posts", postRouter);
 router.use("/users", userRouter);
 router.use("/friend-requests", friendRequestRouter);
@@ -22,5 +21,6 @@ router.use("/likes", likeRouter);
 router.use("/comments", commentRouter);
 router.use("/messages", messageRouter);
 router.use("/chats", chatRouter);
+router.use("/notifications", notificationRouter);
 
 export default router;

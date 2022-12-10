@@ -12,7 +12,6 @@ async function createLike(likeData: LikeType) {
 
 async function getLikes({ filter, page, sort }: ReturnQuery) {
   try {
-    console.log("filter at getLikes service");
     return await Like.find(filter).exec();
   } catch (err) {
     return new Error("Error getting likes, like service");
