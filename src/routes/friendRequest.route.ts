@@ -11,14 +11,10 @@ router.post(
   FriendReqController.post
 );
 
-router.get(
-  "/", 
-  AuthMiddleware.JwtAuth(),
-  FriendReqController.get
-);
+router.get("/", FriendReqController.get);
+
+router.delete("/", AuthMiddleware.JwtAuth(), FriendReqController.id_delete);
 
 router.post("/:id", AuthMiddleware.JwtAuth(), FriendReqController.id_post);
-
-router.delete("/:id", AuthMiddleware.JwtAuth(), FriendReqController.id_delete);
 
 export default router;

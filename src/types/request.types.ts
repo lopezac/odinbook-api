@@ -4,4 +4,8 @@ export type Query = {
   page?: string;
 };
 
-export type ReturnQuery = { sort: string; page: number; filter: object };
+export type ReturnQuery = {
+  sort: string;
+  page: number;
+  filter: { [key: string]: string | string[] | undefined };
+};

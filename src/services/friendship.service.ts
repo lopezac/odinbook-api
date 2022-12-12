@@ -1,10 +1,12 @@
 import { createObjectId } from "../utils/mongoose.helper";
 import Friendship from "../models/friendship.model";
+import { ReturnQuery } from "../types/request.types";
 
-const createFriendship = async (user1: string, user2: string) => {
+const createFriendship = async ({ filter, page, sort }: ReturnQuery) => {
   try {
-    const friendship = new Friendship({ users: [user1, user2] });
-    return await friendship.save();
+    return await Friendship.create({
+      users: [filter.emitter, filter.receiver],
+    });
   } catch (err) {
     throw Error("Error creating friendship, at service");
   }
@@ -23,12 +25,15 @@ const getUserFriends = async (userId: string) => {
     const id = createObjectId(userId);
 
     const friendships = await Friendship.find({ users: { $in: id } });
+    console.log("friendships", friendships);
     const friends = friendships.reduce(
       (arr, value) => arr.concat(value.users),
       [] as any[]
     );
+    const filterFriends = friends.filter((user) => user.toString() !== userId);
+    console.log("friends", friends);
 
-    return friends.filter((user) => user.toString() !== userId);
+    return filteredFriends;
   } catch (err) {
     throw Error("Error getting user friends, friendship service");
   }

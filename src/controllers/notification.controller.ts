@@ -8,7 +8,7 @@ const notifications_get = async (req: Request, res: Response) => {
   try {
     const query = getQueryParams(req.query as Query);
 
-    const notifications = NotificationService.getNotifications(query);
+    const notifications = await NotificationService.getNotifications(query);
 
     return res.json({ notifications });
   } catch (err) {

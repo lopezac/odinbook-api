@@ -13,12 +13,7 @@ async function createUser(userData: UserType) {
 
 async function getUsers({ filter, page, sort }: ReturnQuery) {
   try {
-    console.log("getusers service");
-    const users = await User.find(filter)
-      .sort(sort)
-      .limit(10)
-      .skip(page)
-      .exec();
+    const users = await User.find(filter).sort(sort).limit(10).skip(page);
     return users;
   } catch (err) {
     throw Error("Error getting users, user service");

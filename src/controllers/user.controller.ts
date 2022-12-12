@@ -9,7 +9,6 @@ import { getLastPathWord, getQueryParams } from "../utils/query.helper";
 
 async function get(req: Request, res: Response) {
   try {
-    console.log("get users ")
     const query = getQueryParams(req.query as Query);
 
     const users = await UserService.getUsers(query);
@@ -76,7 +75,7 @@ async function id_friends_get(req: Request, res: Response) {
 
     const friends = await FriendshipService.getUserFriends(userId);
 
-    return res.json(friends);
+    return res.json({ friends });
   } catch (err) {
     return res
       .status(503)

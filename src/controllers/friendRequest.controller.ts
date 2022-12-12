@@ -10,9 +10,12 @@ async function post(req: Request, res: Response) {
   try {
     const { emitter, receiver }: friendReq = req.body;
 
-    const friendReq = await FriendReqService.createFriendReq(emitter, receiver);
+    const friendRequest = await FriendReqService.createFriendReq(
+      emitter,
+      receiver
+    );
 
-    return res.json(friendReq);
+    return res.json({ friendRequest });
   } catch (err) {
     return res
       .status(500)
@@ -34,21 +37,12 @@ async function get(req: Request, res: Response) {
   }
 }
 
+// remove not useful function
 async function id_post(req: Request, res: Response) {
   try {
     const { id } = req.params;
 
-    const friendReq = await FriendReqService.getFriendReq(id);
-    if (!friendReq) return;
-    const { emitter, receiver } = friendReq;
-
-    const friendship = await FriendshipService.createFriendship(
-      emitter,
-      receiver
-    );
-    await FriendReqService.deleteFriendReq(id);
-
-    return res.json(friendship);
+    return res.json({ id });
   } catch (err) {
     return res
       .status(500)
@@ -58,11 +52,11 @@ async function id_post(req: Request, res: Response) {
 
 async function id_delete(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const query = getQueryParams(req.query as Query);
 
-    await FriendReqService.deleteFriendReq(id);
+    await FriendReqService.deleteFriendReq(query);
 
-    return res.json({ friendRequestId: id });
+    return res.json({ success: true });
   } catch (err) {
     return res
       .status(500)

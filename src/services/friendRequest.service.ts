@@ -24,7 +24,6 @@ const getFriendRequests = async ({ filter, page, sort }: ReturnQuery) => {
   }
 };
 
-
 const getFriendReq = async (id: string) => {
   try {
     return await FriendRequest.findById(id).exec();
@@ -33,12 +32,17 @@ const getFriendReq = async (id: string) => {
   }
 };
 
-const deleteFriendReq = async (id: string) => {
+const deleteFriendReq = async ({ filter, page, sort }: ReturnQuery) => {
   try {
-    return await FriendRequest.findByIdAndDelete(id).exec();
+    return await FriendRequest.findOneAndDelete(filter).exec();
   } catch (err) {
     throw Error("Error deleting friend request at service");
   }
 };
 
-export default { createFriendReq, getFriendRequests, getFriendReq, deleteFriendReq };
+export default {
+  createFriendReq,
+  getFriendRequests,
+  getFriendReq,
+  deleteFriendReq,
+};

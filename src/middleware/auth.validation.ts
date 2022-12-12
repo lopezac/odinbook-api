@@ -75,7 +75,9 @@ const update = [
     .isEmail()
     .custom(async (value: string, { req }) => {
       if (value === req.body.email) return true;
+      console.log("value, req.body.email", value, req.body.email);
       const user = await User.findOne({ email: value });
+      console.log("user gotten", user);
       if (user) return Promise.reject();
       return true;
     })

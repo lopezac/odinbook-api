@@ -6,10 +6,4 @@ mongoose.connect(mongoDB);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error"));
 
-const dbConfig = {
-  url: mongoDB,
-  imgBucket: "photos",
-  database: "odinbook",
-};
-
-export { db, dbConfig };
+export default db;
