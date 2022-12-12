@@ -24,16 +24,14 @@ const getUserFriends = async (userId: string) => {
   try {
     const id = createObjectId(userId);
 
-    const friendships = await Friendship.find({ users: { $in: id } });
-    console.log("friendships", friendships);
+    const friendships = await Friendship.find({ users: { $in: id.toString() } });
     const friends = friendships.reduce(
       (arr, value) => arr.concat(value.users),
       [] as any[]
     );
     const filterFriends = friends.filter((user) => user.toString() !== userId);
-    console.log("friends", friends);
 
-    return filteredFriends;
+    return filterFriends;
   } catch (err) {
     throw Error("Error getting user friends, friendship service");
   }

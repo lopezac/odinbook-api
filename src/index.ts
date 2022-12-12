@@ -15,7 +15,7 @@ const port = process.env.PORT;
 const whiteList = ["http://localhost:3000"];
 
 const corsOptions: CorsOptions = {
-  origin: function (origin, callback) {
+  origin: function(origin, callback) {
     if (whiteList.indexOf(origin!) !== -1) {
       return callback(null, true);
     }
@@ -23,11 +23,11 @@ const corsOptions: CorsOptions = {
   },
 };
 
-app.use(cors());
-// app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-// app.use(logger("dev"));
+app.use(cors(corsOptions));
+app.use(helmet());
+app.use(express.json({ limit: "200mb" }));
+app.use(express.urlencoded({ limit: "200mb", extended: true }));
+app.use(logger("dev"));
 
 app.use("/", indexRoute);
 

@@ -20,6 +20,21 @@ async function getUsers({ filter, page, sort }: ReturnQuery) {
   }
 }
 
+const getUsersByIdArray = async (idArray: string[]) => {
+  try {
+    const users: any[] = [];
+
+    for (let i = 0; i < idArray.length; i++) {
+      const friend = await User.findById(idArray[i]);
+      users.push(friend);
+    };
+
+    return users;
+  } catch (err) {
+    throw Error("Error getting users by id array, user service");
+  }
+};
+
 async function getUser(userId: string) {
   try {
     return await User.findById(userId).exec();
@@ -55,6 +70,7 @@ async function deleteUser(userId: string) {
 export default {
   createUser,
   getUsers,
+  getUsersByIdArray,
   getUser,
   getUserByEmail,
   updateUser,

@@ -73,7 +73,8 @@ async function id_friends_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
 
-    const friends = await FriendshipService.getUserFriends(userId);
+    const friendIds = await FriendshipService.getUserFriends(userId);
+    const friends = await UserService.getUsersByIdArray(friendIds);
 
     return res.json({ friends });
   } catch (err) {
