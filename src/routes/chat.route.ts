@@ -6,8 +6,12 @@ const router = express.Router();
 
 router.post("/", AuthMiddleware.JwtAuth(), ChatController.chats_post);
 
-router.get("/:chatId/messages", ChatController.chats_id_msgs_get);
+router.delete(
+  "/:chatId",
+  AuthMiddleware.JwtAuth(),
+  ChatController.chats_id_delete
+);
 
-router.delete("/:chatId", AuthMiddleware.JwtAuth(), ChatController.chats_id_delete);
+router.get("/:chatId/messages", ChatController.chats_id_msgs_get);
 
 export default router;

@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import { getQueryParams } from "../utils/query.helper";
 import ChatService from "../services/chat.service";
 import MessageService from "../services/message.service";
 import { ChatType } from "../types/chat.types";
+import { Query } from "../types/request.types";
 
 async function chats_post(req: Request, res: Response) {
   try {
@@ -9,11 +11,25 @@ async function chats_post(req: Request, res: Response) {
 
     const chat = await ChatService.createChat(chatData);
 
-    return res.json(chat);
+    return res.json({ chat });
   } catch (err) {
     return res
       .status(503)
       .json({ message: "Error at chats_post, chat controller", err });
+  }
+}
+
+async function chats_get(req: Request, res: Response) {
+  try {
+    const query = getQueryParams(req.query as Query);
+
+    const chat = await ChatService.getChats(query);
+
+    return res.json({ chat });
+  } catch (err) {
+    return res
+      .status(503)
+      .json({ message: "Error at chats_get, chat controller", err });
   }
 }
 
@@ -45,4 +61,4 @@ async function chats_id_delete(req: Request, res: Response) {
   }
 }
 
-export default { chats_post, chats_id_msgs_get, chats_id_delete };
+export default { chats_post, chats_get, chats_id_msgs_get, chats_id_delete };

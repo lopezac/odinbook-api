@@ -4,6 +4,7 @@ import { UserUpdate } from "../types/user.types";
 import { hashPassword } from "../services/auth.service";
 import UserService from "../services/user.service";
 import PostService from "../services/post.service";
+import ChatService from "../services/chat.service";
 import FriendshipService from "../services/friendship.service";
 import { getLastPathWord, getQueryParams } from "../utils/query.helper";
 
@@ -84,6 +85,21 @@ async function id_friends_get(req: Request, res: Response) {
   }
 }
 
+async function id_chats_get(req: Request, res: Response) {
+  try {
+    const { userId } = req.params;
+
+    const chatIds = await ChatService.getUserChats(userId);
+    const chats = await UserService.getUsersByIdArray(chatIds);
+
+    return res.json({ chats });
+  } catch (err) {
+    return res
+      .status(503)
+      .json({ message: "Error at id_chats_get, user controller", err });
+  }
+}
+
 async function id_put(req: Request, res: Response) {
   try {
     const { userId } = req.params;
@@ -124,6 +140,7 @@ export default {
   id_get,
   id_posts_get,
   id_friends_get,
+  id_chats_get,
   id_posts_media_get,
   id_delete,
   id_put,

@@ -6,6 +6,10 @@ const router = express.Router();
 
 router.post("/", AuthMiddleware.JwtAuth(), MsgController.messages_post);
 
-router.delete("/:messageId", AuthMiddleware.JwtAuth(), MsgController.messages_id_delete);
+router.delete(
+  "/:messageId",
+  AuthMiddleware.JwtAuth(),
+  MsgController.messages_id_delete
+);
 
 export default router;
