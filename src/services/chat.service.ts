@@ -19,6 +19,14 @@ async function getChats({ filter, page, sort }: ReturnQuery) {
   }
 }
 
+async function getChat(chatId: string) {
+  try {
+    return await Chat.findById(chatId).exec();
+  } catch (err) {
+    throw Error(`Error getting chat, by id, at chat service ${err}`);
+  }
+}
+
 async function getUserChats(userId: string) {
   try {
     const chats = await Chat.find({ users: { $in: userId } });
@@ -39,4 +47,4 @@ async function deleteChat(chatId: string) {
   }
 }
 
-export default { createChat, getChats, getUserChats, deleteChat };
+export default { createChat, getChat, getChats, getUserChats, deleteChat };

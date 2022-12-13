@@ -14,4 +14,6 @@ router.delete(
 
 router.get("/:chatId/messages", ChatController.chats_id_msgs_get);
 
+router.get("/:chatId/users", ChatController.chats_id_users_get);
+
 export default router;
