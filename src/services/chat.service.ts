@@ -1,5 +1,5 @@
-import { flattenFilterUsers } from "../utils/array.helper";
 import Chat from "../models/chat.model";
+import User from "../models/user.model";
 import { ChatType } from "../types/chat.types";
 import { ReturnQuery } from "../types/request.types";
 
@@ -31,9 +31,16 @@ async function getUserChats(userId: string) {
   try {
     const chats = await Chat.find({ users: { $in: userId } });
 
-    const userIds = flattenFilterUsers(chats, userId);
+    const filteredChats = await Promise.all(
+      chats.map(async (chat) => {
+        const receiverId = chat.users.filter((u) => u !== userId);
+        const user = await User.findById(receiverId[0]);
 
-    return userIds;
+        return { _id: chat._id, user };
+      })
+    );
+
+    return filteredChats;
   } catch (err) {
     throw Error("Error getting user chats, at chat service");
   }

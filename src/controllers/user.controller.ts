@@ -89,8 +89,8 @@ async function id_chats_get(req: Request, res: Response) {
   try {
     const { userId } = req.params;
 
-    const chatIds = await ChatService.getUserChats(userId);
-    const chats = await UserService.getUsersByIdArray(chatIds);
+    const chats = await ChatService.getUserChats(userId);
+    // const chats = await UserService.getUsersByIdArray(chatIds);
 
     return res.json({ chats });
   } catch (err) {
