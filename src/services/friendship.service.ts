@@ -1,4 +1,5 @@
 import { flattenFilterUsers } from "../utils/array.helper";
+import { createObjectId } from "../utils/mongoose.helper";
 import Friendship from "../models/friendship.model";
 import { ReturnQuery } from "../types/request.types";
 
@@ -9,6 +10,16 @@ const createFriendship = async ({ filter, page, sort }: ReturnQuery) => {
     });
   } catch (err) {
     throw Error("Error creating friendship, at service");
+  }
+};
+
+const getFriendship = async ({ filter, page, sort }: any) => {
+  try {
+    return await Friendship.findOne({
+      users: { $all: [filter.userOne, filter.userTwo] },
+    }).exec();
+  } catch (err) {
+    throw Error("Error getting friendship, friendship service");
   }
 };
 
@@ -24,12 +35,19 @@ const getUserFriends = async (userId: string) => {
   }
 };
 
-const deleteFriendship = async (id: string) => {
+const deleteFriendship = async ({ filter, page, sort }: ReturnQuery) => {
   try {
-    return await Friendship.findByIdAndDelete(id);
+    return await Friendship.findOneAndDelete({
+      users: { $all: [filter.userOne, filter.userTwo] },
+    }).exec();
   } catch (err) {
     throw Error("Error deleting friendship, at service");
   }
 };
 
-export default { createFriendship, deleteFriendship, getUserFriends };
+export default {
+  createFriendship,
+  getUserFriends,
+  getFriendship,
+  deleteFriendship,
+};

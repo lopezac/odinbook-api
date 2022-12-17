@@ -17,18 +17,33 @@ async function post(req: Request, res: Response) {
   }
 }
 
-async function id_delete(req: Request, res: Response) {
+async function get(req: Request, res: Response) {
   try {
-    const { id } = req.params;
+    const query = getQueryParams(req.query as Query);
 
-    await FriendshipService.deleteFriendship(id);
+    const friendship = await FriendshipService.getFriendship(query);
 
-    return res.json({ friendshipId: id });
+    return res.json({ friendship });
   } catch (err) {
     return res
       .status(500)
-      .json({ message: "Error at id_delete(), friendship controller", err });
+      .json({ message: "Error at get(), friendship controller", err });
   }
 }
 
-export default { post, id_delete };
+async function friendships_delete(req: Request, res: Response) {
+  try {
+    const query = getQueryParams(req.query as Query);
+
+    const friendship = await FriendshipService.deleteFriendship(query);
+
+    return res.json({ friendship });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error at friendships_delete(), friendship controller",
+      err,
+    });
+  }
+}
+
+export default { post, get, friendships_delete };

@@ -5,6 +5,12 @@ const router = express.Router();
 
 router.post("/", AuthMiddleware.JwtAuth(), FriendshipController.post);
 
-router.delete("/:id", AuthMiddleware.JwtAuth(), FriendshipController.id_delete);
+router.get("/", FriendshipController.get);
+
+router.delete(
+  "/",
+  AuthMiddleware.JwtAuth(),
+  FriendshipController.friendships_delete
+);
 
 export default router;
