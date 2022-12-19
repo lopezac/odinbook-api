@@ -8,6 +8,7 @@ dotenv.config();
 
 import indexRoute from "./routes/index";
 import "./configs/db.config";
+import { createFakeUsers } from "./services/seeds.service";
 
 const app = express();
 const port = process.env.PORT;
@@ -15,7 +16,7 @@ const port = process.env.PORT;
 const whiteList = ["http://localhost:3000"];
 
 const corsOptions: CorsOptions = {
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     if (whiteList.indexOf(origin!) !== -1) {
       return callback(null, true);
     }
@@ -43,4 +44,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.send(err);
 });
 
-app.listen(port);
+app.listen(port, () => {
+  if (process.env.NODE_ENV === "production") createFakeUsers();
+});

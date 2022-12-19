@@ -13,7 +13,7 @@ async function createUser(userData: UserType) {
 
 async function getUsers({ filter, page, sort }: ReturnQuery) {
   try {
-    const users = await User.find(filter).sort(sort).limit(10).skip(page);
+    const users = await User.find(filter).sort(sort).limit(11).skip(page);
     return users;
   } catch (err) {
     throw Error("Error getting users, user service");
@@ -27,7 +27,7 @@ const getUsersByIdArray = async (idArray: string[]) => {
     for (let i = 0; i < idArray.length; i++) {
       const friend = await User.findById(idArray[i]);
       users.push(friend);
-    };
+    }
 
     return users;
   } catch (err) {

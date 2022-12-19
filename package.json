@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "NODE_ENV=production npx tsc",
     "start": "node dist/src/index.js",
-    "startDev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
+    "startDev": "NODE_ENV=development concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
     "test": "jest --watch test"
   },
   "repository": {
@@ -45,6 +45,7 @@
     "util": "^0.12.5"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.14",
