@@ -4,13 +4,19 @@ import createError from "http-errors";
 import logger from "morgan";
 import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { registerMessageHandlers } from "./utils/message.handler";
+import { registerNotificationHandlers } from "./utils/notification.handler";
 dotenv.config();
 
-import indexRoute from "./routes/index";
+import indexRoute from "./routes";
 import "./configs/db.config";
 import { createFakeUsers } from "./services/seeds.service";
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 const port = process.env.PORT;
 
 const whiteList = [
@@ -20,7 +26,7 @@ const whiteList = [
 ];
 
 const corsOptions: CorsOptions = {
-  origin: function (origin, callback) {
+  origin: function(origin, callback) {
     console.log("origin", origin);
     if (whiteList.indexOf(origin!) !== -1 || !origin) {
       return callback(null, true);
@@ -29,9 +35,11 @@ const corsOptions: CorsOptions = {
   },
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(helmet());
 app.use(express.json({ limit: "200mb" }));
 app.use(express.urlencoded({ limit: "200mb", extended: true }));
+app.use(logger("dev"));
 
 app.use("/", indexRoute);
 
@@ -47,6 +55,13 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.send(err);
 });
 
-app.listen(port, () => {
+const handleConnection = (socket) => {
+  registerMessageHandlers(io, socket);
+  registerNotificationHandlers(io, socket);
+};
+
+io.on("connection", handleConnection);
+
+httpServer.listen(port, () => {
   if (process.env.NODE_ENV === "production") createFakeUsers();
 });
