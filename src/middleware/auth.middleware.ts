@@ -59,20 +59,24 @@ passport.use(
     (accessToken, refreshToken, profile: Profile, cb) => {
       const userData = profile._json;
       User.findOne({ facebookID: userData.id }).exec((err, user) => {
+        console.log("user", user);
         if (err) return cb(err);
         if (user) return cb(null, user);
         else {
           const { first_name, last_name, id, picture, email }: FBUser =
             userData;
-          const user = new User({
+
+          const newUser = new User({
             firstName: first_name,
             lastName: last_name,
             facebookID: id,
             picture: picture.data.url,
             email,
           });
-          user.save().then((user) => {
-            cb(null, user);
+          console.log("createduser", newUser);
+
+          newUser.save().then((newUser) => {
+            cb(null, newUser);
           });
         }
       });
