@@ -8,6 +8,8 @@ async function messages_post(req: Request, res: Response) {
 
     const message = await MessageService.createMessage(msgData);
 
+    // socket.emit("message:create", message);
+
     return res.json(message);
   } catch (err) {
     return res

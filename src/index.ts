@@ -4,7 +4,7 @@ import createError from "http-errors";
 import logger from "morgan";
 import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 import { registerMessageHandlers } from "./utils/message.handler";
 import { registerNotificationHandlers } from "./utils/notification.handler";
@@ -16,7 +16,6 @@ import { createFakeUsers } from "./services/seeds.service";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
 const port = process.env.PORT;
 
 const whiteList = [
@@ -26,7 +25,7 @@ const whiteList = [
 ];
 
 const corsOptions: CorsOptions = {
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     console.log("origin", origin);
     if (whiteList.indexOf(origin!) !== -1 || !origin) {
       return callback(null, true);
@@ -55,7 +54,11 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.send(err);
 });
 
-const handleConnection = (socket) => {
+const io = new Server(httpServer, {
+  cors: { origin: "http://localhost:3000" },
+});
+
+const handleConnection = (socket: Socket) => {
   registerMessageHandlers(io, socket);
   registerNotificationHandlers(io, socket);
 };
