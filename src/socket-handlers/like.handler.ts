@@ -1,7 +1,8 @@
 import { Server, Socket } from "socket.io";
+import { LikeType } from "../types/like.types";
 
 export const registerLikeHandlers = (io: Server, socket: Socket) => {
-  const createOrder = () => {
+  const createOrder = (data: LikeType) => {
     return socket.emit("like:create", data);
   };
 
