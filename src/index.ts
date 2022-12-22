@@ -13,12 +13,13 @@ dotenv.config();
 import indexRoute from "./routes";
 import "./configs/db.config";
 import { createFakeUsers } from "./services/seeds.service";
+import { FRONT_END_URL } from "./configs/environment.config";
 
 const app = express();
 const httpServer = createServer(app);
 const port = process.env.PORT;
 
-const whiteList = [process.env.FRONT_END_URL];
+const whiteList = [FRONT_END_URL];
 
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
@@ -51,7 +52,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 const io = new Server(httpServer, {
-  cors: { origin: process.env.FRONT_END_URL },
+  cors: { origin: FRONT_END_URL },
 });
 
 const handleConnection = (socket: Socket) => {

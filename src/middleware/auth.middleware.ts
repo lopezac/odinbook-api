@@ -4,7 +4,8 @@ import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as FacebookStrategy, Profile } from "passport-facebook";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model";
-import { FBUser } from "types/user.types";
+import { FBUser } from "../types/user.types";
+import { FRONT_END_URL } from "../configs/environment.config";
 
 // Local auth, email and password
 const UserConfig = { usernameField: "email" };
@@ -49,7 +50,7 @@ passport.use(
 const FBOptions = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_SECRET,
-  callbackURL: `${process.env.FRONT_END_URL}/auth/facebook/callback`,
+  callbackURL: `${FRONT_END_URL}/auth/facebook/callback`,
   profileFields: ["id", "name", "picture", "email", "gender", "birthday"],
 };
 
