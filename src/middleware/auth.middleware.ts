@@ -49,7 +49,7 @@ passport.use(
 const FBOptions = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_SECRET,
-  callbackURL: "http://localhost:8000/auth/facebook/callback",
+  callbackURL: `${process.env.FRONT_END_URL}/auth/facebook/callback`,
   profileFields: ["id", "name", "picture", "email", "gender", "birthday"],
 };
 

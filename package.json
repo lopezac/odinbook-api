@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_ENV=production npx tsc",
+    "build": "npx -p typescript tsc",
     "start": "node dist/src/index.js",
     "startDev": "NODE_ENV=development concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
     "test": "jest --watch test"

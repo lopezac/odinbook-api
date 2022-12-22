@@ -18,11 +18,7 @@ const app = express();
 const httpServer = createServer(app);
 const port = process.env.PORT;
 
-const whiteList = [
-  "http://localhost:3000",
-  "https://www.facebook.com",
-  "http://www.facebook.com",
-];
+const whiteList = [process.env.FRONT_END_URL];
 
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
@@ -55,7 +51,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 const io = new Server(httpServer, {
-  cors: { origin: "http://localhost:3000" },
+  cors: { origin: process.env.FRONT_END_URL },
 });
 
 const handleConnection = (socket: Socket) => {

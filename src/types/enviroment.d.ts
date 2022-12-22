@@ -7,6 +7,7 @@ declare global {
       PORT: number;
       FB_APP_SECRET: string;
       FB_APP_ID: string;
+      FRONT_END_URL: string;
       NODE_ENV: "development" | "production";
     }
   }
