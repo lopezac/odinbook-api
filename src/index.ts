@@ -6,8 +6,7 @@ import helmet from "helmet";
 import cors, { CorsOptions } from "cors";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
-import { registerMessageHandlers } from "./utils/message.handler";
-import { registerNotificationHandlers } from "./utils/notification.handler";
+import { registerHandlers } from "./socket-handlers/index";
 dotenv.config();
 
 import indexRoute from "./routes";
@@ -56,8 +55,7 @@ const io = new Server(httpServer, {
 });
 
 const handleConnection = (socket: Socket) => {
-  registerMessageHandlers(io, socket);
-  registerNotificationHandlers(io, socket);
+  registerHandlers(io, socket);
 };
 
 io.on("connection", handleConnection);
