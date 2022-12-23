@@ -13,7 +13,7 @@ async function createPost(postData: PostType) {
 
 async function getPosts() {
   try {
-    return await Post.find({}).exec();
+    return await Post.find({}).sort("-created_at").exec();
   } catch (err) {
     throw Error("Error getting user posts, user service");
   }
@@ -29,22 +29,26 @@ async function getPost(postId: string) {
 
 async function getUserPosts(userId: string) {
   try {
-    return await Post.find({ user: userId }).exec();
+    return await Post.find({ user: userId }).sort("-created_at").exec();
   } catch (err) {
     throw Error("Error getting user posts, user service");
   }
 }
 
-async function getUserPostsWithMedia(userId: string, mediaType: string, { filter, page, sort }: ReturnQuery) {
+async function getUserPostsWithMedia(
+  userId: string,
+  mediaType: string,
+  { filter, page, sort }: ReturnQuery
+) {
   try {
     return await Post.find({
       user: userId,
       [mediaType]: { $exists: true, $not: { $size: 0 } },
     })
-    .sort(sort)
-    .limit(10)
-    .skip(page)
-    .exec();
+      .sort(sort)
+      .limit(10)
+      .skip(page)
+      .exec();
   } catch (err) {
     throw Error(
       `Error getting user posts with media ${mediaType}, post service`
@@ -62,7 +66,7 @@ async function updatePost(userId: string, postUpdate: PostUpdate) {
 
 async function deletePost(postId: string) {
   try {
-    return await Post.findOneAndDelete({ post: postId });
+    return await Post.findByIdAndDelete(postId);
   } catch (err) {
     throw Error("Error deleting post, post service");
   }

@@ -60,6 +60,8 @@ const handleConnection = (socket: Socket) => {
 
 io.on("connection", handleConnection);
 
-httpServer.listen(port, () => {
-  if (process.env.NODE_ENV === "production") createFakeUsers();
+httpServer.listen(port, async () => {
+  if (process.env.NODE_ENV === "production") {
+    await createFakeUsers();
+  }
 });

@@ -19,9 +19,11 @@ const createRandomUser = (): UserType => {
   };
 };
 
-export const createFakeUsers = () => {
-  console.log("createfakeusers");
-  Array.from({ length: 10 }).forEach(async () => {
-    await User.create(createRandomUser());
-  });
+export const createFakeUsers = async () => {
+  const usersCount = await User.countDocuments();
+  if (usersCount < 20) {
+    Array.from({ length: 20 }).forEach(async () => {
+      await User.create(createRandomUser());
+    });
+  }
 };

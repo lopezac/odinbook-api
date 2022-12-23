@@ -3,7 +3,8 @@ import { MessageType } from "../types/message.types";
 
 export const registerMessageHandlers = (io: Server, socket: Socket) => {
   const createMessage = (message: MessageType) => {
-    return socket.emit("message:create", message);
+    socket.broadcast.emit("message:create", message);
+    socket.emit("message:create", message);
   };
 
   const deleteMessage = () => {
